@@ -1,0 +1,550 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: #f5f5f5;
+  color: #333;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: white;
+}
+
+/* Home Page */
+.home-page {
+  padding: 20px;
+}
+
+.home-header {
+  text-align: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+}
+
+.home-header h1 {
+  font-size: 28px;
+  color: #4CAF50;
+  margin-bottom: 8px;
+}
+
+.home-header p {
+  color: #666;
+  font-size: 14px;
+}
+
+.loading, .error-message, .location-info {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.loading {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.error-message {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.location-info {
+  background: #e8f5e9;
+  color: #2e7d32;
+  font-size: 14px;
+}
+
+.search-section {
+  margin-bottom: 24px;
+}
+
+.search-section h2 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+/* Product Search */
+.product-search {
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  border-color: #4CAF50;
+}
+
+.product-list {
+  list-style: none;
+  margin-top: 8px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.product-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.product-item:hover {
+  background: #f5f5f5;
+}
+
+.product-item:last-child {
+  border-bottom: none;
+}
+
+.product-name {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.product-category {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Quick Actions */
+.quick-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-btn {
+  padding: 16px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.action-btn:hover {
+  background: #45a049;
+}
+
+/* Search Page */
+.search-page {
+  padding: 20px;
+}
+
+.search-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.btn-back {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.search-header h2 {
+  font-size: 20px;
+  flex: 1;
+}
+
+.price-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.summary-item {
+  text-align: center;
+}
+
+.summary-item .label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.summary-item .value {
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  color: #4CAF50;
+}
+
+/* Price List */
+.price-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.price-list-header h3 {
+  font-size: 16px;
+}
+
+.btn-map {
+  padding: 8px 16px;
+  background: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.markets-list {
+  list-style: none;
+}
+
+.market-item {
+  padding: 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.badge.cheapest {
+  background: #4CAF50;
+  color: white;
+}
+
+.badge.worth-it {
+  background: #FF9800;
+  color: white;
+}
+
+.market-info {
+  margin-bottom: 8px;
+}
+
+.market-name {
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.market-address {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+.market-distance {
+  font-size: 13px;
+  color: #2196F3;
+  font-weight: 500;
+}
+
+.market-price {
+  margin-top: 8px;
+}
+
+.price {
+  font-size: 24px;
+  font-weight: 700;
+  color: #4CAF50;
+}
+
+.original-price {
+  font-size: 14px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+.cost-benefit {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.savings {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 4px;
+}
+
+/* Map Page */
+.map-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.map-header h2 {
+  font-size: 18px;
+  flex: 1;
+}
+
+.map-legend {
+  padding: 12px 20px;
+  background: white;
+  border-top: 1px solid #e0e0e0;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Scan Page */
+.scan-page {
+  padding: 20px;
+}
+
+.scan-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.scan-header h2 {
+  font-size: 20px;
+  flex: 1;
+}
+
+.camera-container {
+  position: relative;
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.camera-container video {
+  width: 100%;
+  display: block;
+}
+
+.btn-start-camera, .btn-capture {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn-start-camera {
+  background: #2196F3;
+  color: white;
+}
+
+.btn-capture {
+  background: #4CAF50;
+  color: white;
+}
+
+.preview-container img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.processing {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.processing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 1000;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.result-container {
+  margin-top: 20px;
+}
+
+.result-container h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.extracted-items {
+  list-style: none;
+  margin-bottom: 16px;
+}
+
+.extracted-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.btn-confirm {
+  width: 100%;
+  padding: 14px;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Profile & Admin Pages */
+.profile-page, .admin-page {
+  padding: 20px;
+}
+
+.profile-header, .admin-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.profile-header h2, .admin-header h2 {
+  font-size: 20px;
+  flex: 1;
+}
+
+.profile-section, .admin-section {
+  margin-bottom: 24px;
+}
+
+.profile-section h3, .admin-section h3 {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.btn-primary, .btn-secondary {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.btn-primary {
+  background: #4CAF50;
+  color: white;
+}
+
+.btn-secondary {
+  background: #f5f5f5;
+  color: #333;
+  border: 1px solid #e0e0e0;
+}
+
+.upload-form input, .upload-form select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* Loading & Empty States */
+.loading-page, .error-page, .empty-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  font-size: 16px;
+  color: #666;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #999;
+}
+
+/* Responsive - Tablet and Desktop */
+@media (min-width: 768px) {
+  .app {
+    max-width: 768px;
+  }
+  
+  .price-summary {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .app {
+    max-width: 1024px;
+  }
+}
