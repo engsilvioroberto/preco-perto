@@ -9,7 +9,11 @@ import type { PriceComparison } from '../types';
 export const Search = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
-  const { latitude, longitude } = useGeolocation();
+  const { latitude: geoLat, longitude: geoLng, error: geoError, loading: geoLoading } = useGeolocation();
+  
+  const latitude = geoLat !== null ? geoLat : (geoLoading ? null : -21.1767);
+  const longitude = geoLng !== null ? geoLng : (geoLoading ? null : -47.8208);
+
   const [comparison, setComparison] = useState<PriceComparison | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,6 +57,12 @@ export const Search = () => {
         <button onClick={() => navigate('/')} className="btn-back">←</button>
         <h2>{comparison.product.name}</h2>
       </header>
+
+      {geoError && (
+        <div className="location-warning-banner" style={{ backgroundColor: '#fff3cd', color: '#856404', padding: '10px', textAlign: 'center', fontSize: '14px', borderRadius: '4px', margin: '10px' }}>
+          ⚠️ Usando localização padrão (Ribeirão Preto). Ative o GPS para ver preços na sua região.
+        </div>
+      )}
 
       <div className="price-summary">
         <div className="summary-item">

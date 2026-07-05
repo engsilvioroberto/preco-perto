@@ -10,7 +10,7 @@ import './App.css';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/preco-perto">
       <div className="app">
         <Routes>
           <Route path="/" element={<Home />} />
