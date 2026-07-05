@@ -1,16 +1,15 @@
 import uuid
 from datetime import datetime
 from sqlalchemy import Column, String, Text, DateTime, ForeignKey, Numeric
-from sqlalchemy.dialects.postgresql import UUID
-from app.core.database import Base
+from app.core.database import Base, GUID
 
 
 class Receipt(Base):
     __tablename__ = "receipts"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    market_id = Column(UUID(as_uuid=True), ForeignKey("markets.id"), nullable=True)
+    id = Column(GUID, primary_key=True, default=uuid.uuid4)
+    user_id = Column(GUID, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    market_id = Column(GUID, ForeignKey("markets.id"), nullable=True)
     image_url = Column(Text, nullable=False)
     ocr_text = Column(Text, nullable=True)
     cnpj_extracted = Column(String(18), nullable=True)
