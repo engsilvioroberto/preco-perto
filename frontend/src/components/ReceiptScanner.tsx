@@ -1,13 +1,14 @@
 import { useState, useRef } from 'react';
 
 interface ReceiptScannerProps {
-  onCapture: () => void;
+  onCapture: (imageDataUrl: string) => void;
 }
 
 export const ReceiptScanner = ({ onCapture }: ReceiptScannerProps) => {
   const [preview, setPreview] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const startCamera = async () => {
     try {
@@ -33,9 +34,22 @@ export const ReceiptScanner = ({ onCapture }: ReceiptScannerProps) => {
         ctx.drawImage(video, 0, 0);
         const imageData = canvas.toDataURL('image/jpeg');
         setPreview(imageData);
-        onCapture();
+        onCapture(imageData);
       }
     }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const imageData = reader.result as string;
+      setPreview(imageData);
+      onCapture(imageData);
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
@@ -50,6 +64,17 @@ export const ReceiptScanner = ({ onCapture }: ReceiptScannerProps) => {
             Capturar
           </button>
           <canvas ref={canvasRef} style={{ display: 'none' }} />
+          <button onClick={() => fileInputRef.current?.click()} className="btn-upload">
+            🖼️ Selecionar Arquivo
+          </button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={handleFileChange}
+            style={{ display: 'none' }}
+          />
         </div>
       ) : (
         <div className="preview-container">

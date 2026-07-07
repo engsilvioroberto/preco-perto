@@ -385,6 +385,18 @@ body {
   color: white;
 }
 
+.btn-upload {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  background: #757575;
+  color: white;
+}
+
 .preview-container img {
   width: 100%;
   border-radius: 8px;
@@ -458,6 +470,53 @@ body {
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
+}
+
+.market-selector {
+  margin-bottom: 16px;
+}
+
+.market-selector label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #666;
+}
+
+.market-selector select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  font-size: 14px;
+}
+
+.resolved-market {
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.review-item {
+  gap: 8px;
+}
+
+.review-item input[type="text"] {
+  flex: 1;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 6px;
+}
+
+.review-item input[type="number"] {
+  width: 80px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 6px;
+}
+
+.error-message {
+  color: #c62828;
+  margin-bottom: 12px;
 }
 
 /* Profile & Admin Pages */
