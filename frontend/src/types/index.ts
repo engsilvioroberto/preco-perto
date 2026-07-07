@@ -76,3 +76,22 @@ export interface User {
   name: string;
   is_admin: boolean;
 }
+
+export interface ParsedReceiptItem {
+  description: string;
+  price: number;
+  include: boolean;
+}
+
+export interface ParsedReceipt {
+  cnpj: string | null;
+  total: number | null;
+  date: string | null;
+  items: ParsedReceiptItem[];
+}
+
+export interface ReceiptUploadResponse {
+  receipt_id: string;
+  products_created: number;
+  prices_created: number;
+}
