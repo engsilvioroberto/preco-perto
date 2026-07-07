@@ -1,7 +1,7 @@
 # API Contracts — PreçoPerto MVP
 
-**Versão**: 1.0  
-**Data**: 2026-07-04  
+**Versão**: 1.1  
+**Data**: 2026-07-06  
 **Base URL**: `https://api.precoperto.app` (produção) ou `http://localhost:8000` (local)
 
 ---
@@ -163,6 +163,39 @@ GET /api/v1/markets/nearby?lat=-21.1767&lng=-47.8208&radius=10
 }
 ```
 
+### Buscar Mercado por CNPJ
+
+```http
+GET /api/v1/markets/by-cnpj?cnpj=45.543.915/0001-81
+```
+
+**Query Params**:
+- `cnpj` (required): CNPJ do mercado (com ou sem pontuação)
+
+**Response 200**:
+```json
+{
+  "id": "uuid",
+  "name": "Carrefour Ribeirão",
+  "cnpj": "45.543.915/0001-81",
+  "address": "Av. Presidente Vargas, 2001",
+  "neighborhood": "Centro",
+  "latitude": -21.1767,
+  "longitude": -47.8208,
+  "opening_hours": {
+    "monday": {"open": "08:00", "close": "22:00"}
+  },
+  "categories": ["supermercado"]
+}
+```
+
+**Response 404**:
+```json
+{
+  "detail": "Mercado não encontrado para este CNPJ"
+}
+```
+
 ### Obter Mercado por ID
 
 ```http
@@ -289,112 +322,48 @@ GET /api/v1/prices/market/{market_id}?limit=50
 
 ## Receipts (Notas Fiscais)
 
-### Upload e Processar Nota Fiscal
+> **Nota de arquitetura:** OCR e parsing rodam 100% client-side (Tesseract.js).  
+> O backend recebe itens já extraídos, revisados e confirmados pelo usuário,  
+> faz fuzzy-matching com produtos existentes e persiste `Receipt` + `Price` rows.  
+> Não há polling de status — o upload é síncrono.
+
+### Upload de Nota Fiscal (itens pré-processados no client)
 
 ```http
-POST /api/v1/receipts
+POST /api/v1/receipts/
 Authorization: Bearer <token>
 Content-Type: multipart/form-data
 
 image: <file>
+market_id: "uuid"
+items: '[{"description":"LEITE INTEGRAL PIRACANJUBA 1L","price":4.99}]'
+cnpj: "45.543.915/0001-81"
+ocr_text: "texto bruto do OCR..."
 latitude: -21.1767
 longitude: -47.8208
 ```
 
 **Form Data**:
-- `image` (required): Imagem da nota fiscal (JPEG, PNG, PDF)
+- `image` (required): Imagem da nota fiscal (JPEG, PNG)
+- `market_id` (required): ID do mercado identificado (UUID)
+- `items` (required): JSON string — array de `{"description": string, "price": number}` com itens revisados/confirmados
+- `cnpj` (optional): CNPJ extraído da nota
+- `ocr_text` (optional): Texto bruto do OCR (para auditoria/debug)
 - `latitude` (optional): Latitude do usuário ao escanear
 - `longitude` (optional): Longitude do usuário ao escanear
+
+**Processamento síncrono**:
+1. Salva a imagem em `/uploads/receipts/<uuid><ext>`
+2. Cria registro `Receipt` com status `completed`
+3. Para cada item: faz fuzzy-match (`threshold ≥ 85`) com produtos existentes; cria novo `Product` se não houver match
+4. Cria registro `Price` com `source = "receipt"` e `source_id = receipt.id`
 
 **Response 201**:
 ```json
 {
   "receipt_id": "uuid",
-  "status": "processing",
-  "message": "Nota fiscal enviada para processamento. Você receberá os resultados em breve."
-}
-```
-
-### Obter Status e Resultado da Nota Fiscal
-
-```http
-GET /api/v1/receipts/{receipt_id}
-Authorization: Bearer <token>
-```
-
-**Response 200** (status: completed):
-```json
-{
-  "id": "uuid",
-  "status": "completed",
-  "market_id": "uuid",
-  "market_name": "Carrefour Ribeirão",
-  "cnpj_extracted": "12.345.678/0001-90",
-  "total_value": 150.75,
-  "receipt_date": "2026-07-03T15:30:00Z",
-  "items": [
-    {
-      "id": "uuid",
-      "product_id": "uuid",
-      "product_name": "Leite Integral Piracanjuba 1L",
-      "description": "LEITE INT PIRAC 1L",
-      "quantity": 2.0,
-      "unit_price": 4.99,
-      "total_price": 9.98,
-      "confidence": 95.5,
-      "is_confirmed": false
-    },
-    {
-      "id": "uuid",
-      "product_id": null,
-      "product_name": null,
-      "description": "PRODUTO NAO IDENTIFICADO",
-      "quantity": 1.0,
-      "unit_price": 15.00,
-      "total_price": 15.00,
-      "confidence": 45.2,
-      "is_confirmed": false
-    }
-  ],
-  "total_items": 15,
-  "confirmed_items": 12,
-  "pending_review": 3
-}
-```
-
-### Confirmar/Corrigir Itens da Nota Fiscal
-
-```http
-PATCH /api/v1/receipts/{receipt_id}/items
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "items": [
-    {
-      "item_id": "uuid",
-      "product_id": "uuid",
-      "is_confirmed": true
-    },
-    {
-      "item_id": "uuid",
-      "product_id": "uuid",
-      "quantity": 3.0,
-      "unit_price": 5.50,
-      "is_confirmed": true
-    }
-  ]
-}
-```
-
-**Response 200**:
-```json
-{
-  "receipt_id": "uuid",
-  "status": "completed",
-  "confirmed_items": 15,
-  "prices_added": 15,
-  "message": "Nota fiscal confirmada. 15 preços adicionados ao sistema."
+  "products_created": 1,
+  "prices_created": 2
 }
 ```
 
