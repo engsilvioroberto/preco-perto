@@ -65,7 +65,20 @@ async def get_market_by_cnpj(cnpj: str = Query(...), db: AsyncSession = Depends(
 
     for market in markets:
         if market.cnpj and re.sub(r'\D', '', market.cnpj) == digits_only:
-            return market
+            return {
+                "id": str(market.id),
+                "name": market.name,
+                "cnpj": market.cnpj,
+                "address": market.address,
+                "neighborhood": market.neighborhood,
+                "latitude": market.latitude,
+                "longitude": market.longitude,
+                "city": market.city,
+                "state": market.state,
+                "zipcode": market.zipcode,
+                "opening_hours": market.opening_hours,
+                "categories": market.categories,
+            }
 
     raise HTTPException(status_code=404, detail="Mercado não encontrado para este CNPJ")
 
