@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, s
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
+from app.api.deps import get_current_user
 from app.core.database import get_db
 from app.models.market import Market
 from app.models.product import Product
@@ -19,7 +20,6 @@ from app.services.product_normalization import normalize_product, fuzzy_match
 
 router = APIRouter()
 
-TEST_USER_EMAIL = "joao@gmail.com"
 FUZZY_MATCH_THRESHOLD = 85.0
 UPLOAD_DIR = Path(__file__).resolve().parents[3] / "uploads" / "receipts"
 
@@ -33,18 +33,14 @@ async def upload_receipt(
     ocr_text: Optional[str] = Form(None),
     latitude: Optional[float] = Form(None),
     longitude: Optional[float] = Form(None),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     """Upload e processamento de nota fiscal escaneada (itens já extraídos e revisados no client)"""
     result = await db.execute(select(Market).where(Market.id == market_id))
     market = result.scalar_one_or_none()
     if not market:
         raise HTTPException(status_code=404, detail="Mercado não encontrado")
-
-    result = await db.execute(select(User).where(User.email == TEST_USER_EMAIL))
-    user = result.scalar_one_or_none()
-    if not user:
-        raise HTTPException(status_code=500, detail="Usuário de teste não encontrado — rode scripts/seed_db.py")
 
     try:
         raw_items = json.loads(items)
@@ -65,7 +61,7 @@ async def upload_receipt(
     now = datetime.utcnow()
     receipt = Receipt(
         id=uuid.uuid4(),
-        user_id=user.id,
+        user_id=current_user.id,
         market_id=market.id,
         image_url=f"/uploads/receipts/{image_id}{extension}",
         ocr_text=ocr_text,
@@ -110,7 +106,7 @@ async def upload_receipt(
             price=item.price,
             source="receipt",
             source_id=receipt.id,
-            created_by=user.id,
+            created_by=current_user.id,
             captured_at=now,
             created_at=now,
             updated_at=now,

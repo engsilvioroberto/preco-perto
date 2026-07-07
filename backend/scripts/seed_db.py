@@ -17,7 +17,10 @@ from app.models.market import Market
 from app.models.product import Product
 from app.models.price import Price
 from app.models.receipt import Receipt
+from app.models.offer_flyer import OfferFlyer
+from app.models.offer_flyer_item import OfferFlyerItem
 from app.core.security import get_password_hash
+from app.services.product_normalization import normalize_product
 
 async def seed_data():
     engine = create_async_engine(settings.DATABASE_URL)
@@ -156,8 +159,7 @@ async def seed_data():
             
             products = []
             for name, category, unit, qty, brand in products_data:
-                normalized = name.lower()
-                normalized = ''.join(c for c in normalized if c.isalnum() or c.isspace())
+                normalized = normalize_product(name)
                 p = Product(
                     id=uuid.uuid4(),
                     name=name,
@@ -212,7 +214,7 @@ async def seed_data():
                         price=price_val,
                         original_price=orig_price,
                         is_promotion=is_promo,
-                        source="seed",
+                        source="manual",
                         captured_at=datetime.utcnow(),
                         expires_at=datetime.utcnow() + timedelta(days=7),
                         created_by=admin.id,

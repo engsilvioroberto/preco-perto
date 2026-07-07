@@ -76,13 +76,20 @@
 
 ---
 
-## Próximos Passos
+### 9. OCR Server-Side para Jornais de Ofertas
+**Decisão**: pytesseract (server-side) + fluxo bifásico
+**Justificativa**: Jornais de ofertas têm layout variável e exigem processamento mais robusto que client-side Tesseract.js consegue. Admin pode revisar itens extraídos antes de confirmar.
+**Fluxo**: Admin uploada imagem → server-side OCR (pytesseract, lang=por) → itens extraídos com confidence score → admin revisa → confirma → `Price` rows criadas com `source="oferta_flyer"`.
+**Trade-off**: Dependência de binário Tesseract-OCR instalado no servidor. Precisão do parser ~60-70%; mitigado pelo review admin.
 
-Com clarifications resolvidos, avançar para:
-1. **Plan.md** — plano técnico detalhado
-2. **Data-model.md** — schema do banco
-3. **Tasks.md** — decomposição em tarefas executáveis
-4. **Implement** — código
+### 10. Cadastro de Mercado via API
+**Decisão**: `POST /api/v1/markets` com autenticação admin e geocoding automático
+**Justificativa**: Necessário para admin criar mercados antes de associar jornais de ofertas. Geocoding via Nominatim (serviço existente).
+---
+
+## Fase 2 — Tasks Adicionadas
+
+Com a Fase 2 concluída, adicionar ao tasks.md como Phase 11.
 
 ---
 

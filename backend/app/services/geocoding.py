@@ -27,8 +27,9 @@ def _get_redis() -> Optional[redis.Redis]:
     if _redis_client is not None:
         return _redis_client
     try:
-        _redis_client = redis.Redis(
-            host="localhost", port=6379, db=0, decode_responses=True
+        from app.core.config import settings as app_settings
+        _redis_client = redis.Redis.from_url(
+            app_settings.REDIS_URL, decode_responses=True
         )
         _redis_client.ping()
         return _redis_client

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 from uuid import UUID
 from decimal import Decimal
 from pydantic import BaseModel
@@ -27,3 +27,8 @@ class ProductResponse(ProductBase):
 
     class Config:
         from_attributes = True
+
+
+class ProductSearchResponse(BaseModel):
+    products: List[ProductResponse]
+    total: int

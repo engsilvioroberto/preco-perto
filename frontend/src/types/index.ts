@@ -48,6 +48,7 @@ export interface MarketPrice {
   distance_km: number;
   captured_at: string;
   source: string;
+  is_stale: boolean;
   cost_benefit?: {
     savings_vs_most_expensive: number;
     most_expensive_price: number;
@@ -90,8 +91,32 @@ export interface ParsedReceipt {
   items: ParsedReceiptItem[];
 }
 
+export interface AuthResponse {
+  access_token: string;
+  token_type: string;
+  user: User;
+}
+
 export interface ReceiptUploadResponse {
   receipt_id: string;
   products_created: number;
   prices_created: number;
+}
+
+export interface OfferFlyerItem {
+  id: string;
+  product_id: string | null;
+  product_name: string | null;
+  description: string;
+  price: number;
+  original_price: number | null;
+  confidence: number | null;
+  is_confirmed: boolean;
+}
+
+export interface OfferFlyerUploadResponse {
+  offer_flyer_id: string;
+  status: string;
+  items: OfferFlyerItem[];
+  total_items: number;
 }

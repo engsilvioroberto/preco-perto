@@ -1,7 +1,7 @@
 
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, Float, Text, JSON
+from sqlalchemy import Column, String, DateTime, Float, Text, JSON, ForeignKey
 from app.core.database import Base, GUID
 
 
@@ -21,6 +21,6 @@ class Market(Base):
     opening_hours = Column(JSON, nullable=True)
     categories = Column(JSON, nullable=True)
     phone = Column(String(20), nullable=True)
-    created_by = Column(GUID, nullable=True)
+    created_by = Column(GUID, ForeignKey("users.id"), nullable=True)
     created_at = Column(DateTime(timezone=True), default=datetime.utcnow)
     updated_at = Column(DateTime(timezone=True), default=datetime.utcnow, onupdate=datetime.utcnow)

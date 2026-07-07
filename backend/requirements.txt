@@ -11,5 +11,12 @@ python-dotenv
 alembic
 email-validator
 aiosqlite
+asyncpg
 rapidfuzz
 requests
+pytesseract
+Pillow
+bcrypt
+pytest
+httpx
+pytest-asyncio

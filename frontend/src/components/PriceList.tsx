@@ -20,22 +20,28 @@ export const PriceList = ({ prices, onViewMap }: PriceListProps) => {
           🗺️ Ver no mapa
         </button>
       </div>
-      
+
       <ul className="markets-list">
         {prices.map((market, index) => {
           const isCheapest = index === 0;
-          const savings = market.price - cheapest.price;
-          
+          const cb = market.cost_benefit;
+          const savings = cb ? cb.savings_vs_most_expensive : 0;
+
           return (
             <li key={market.market_id} className="market-item">
               {isCheapest && <span className="badge cheapest">Mais barato</span>}
-              
+              {market.is_stale && (
+                <span className="badge stale">
+                  Preço de {new Date(market.captured_at).toLocaleDateString('pt-BR')} — pode ter mudado
+                </span>
+              )}
+
               <div className="market-info">
                 <div className="market-name">{market.market_name}</div>
                 <div className="market-address">{market.market_address}</div>
                 <div className="market-distance">{market.distance_km} km</div>
               </div>
-              
+
               <div className="market-price">
                 <div className="price">R$ {market.price.toFixed(2)}</div>
                 {market.is_promotion && market.original_price && (
@@ -44,15 +50,23 @@ export const PriceList = ({ prices, onViewMap }: PriceListProps) => {
                   </div>
                 )}
               </div>
-              
-              {market.cost_benefit && savings > 0 && (
+
+              {cb && savings > 0 && (
                 <div className="cost-benefit">
                   <div className="savings">
-                    Economia: R$ {savings.toFixed(2)}
+                    Economia vs mais caro: R$ {savings.toFixed(2)}
                   </div>
-                  {market.cost_benefit.worth_it_walking && (
-                    <span className="badge worth-it">Vale a pena!</span>
-                  )}
+                  <div className="transport-costs">
+                    <span className="transport-cost">
+                      🚶 {cb.worth_it_walking ? 'Vale a pena!' : `Custo: R$ ${cb.transport_cost_walking.toFixed(2)}`}
+                    </span>
+                    <span className="transport-cost">
+                      🚗 {cb.worth_it_car ? 'Vale a pena!' : `Custo: R$ ${cb.transport_cost_car.toFixed(2)}`}
+                    </span>
+                    <span className="transport-cost">
+                      🚌 {cb.worth_it_bus ? 'Vale a pena!' : `Custo: R$ ${cb.transport_cost_bus.toFixed(2)}`}
+                    </span>
+                  </div>
                 </div>
               )}
             </li>

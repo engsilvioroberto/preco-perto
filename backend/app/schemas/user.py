@@ -32,6 +32,7 @@ class UserResponse(UserBase):
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    user: UserResponse
 
 
 class TokenData(BaseModel):

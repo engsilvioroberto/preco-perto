@@ -2,7 +2,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.api.routes import auth, products, markets, prices, receipts
+from app.api.routes import auth, products, markets, prices, receipts, admin
 
 app = FastAPI(
     title="PreçoPerto API",
@@ -17,7 +17,12 @@ app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 # CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://precoperto.app",
+        "http://localhost:5173",
+        "http://localhost:3000",
+    ],
+    allow_origin_regex=r"https://.*\.github\.io",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -29,6 +34,7 @@ app.include_router(products.router, prefix="/api/v1/products", tags=["products"]
 app.include_router(markets.router, prefix="/api/v1/markets", tags=["markets"])
 app.include_router(prices.router, prefix="/api/v1/prices", tags=["prices"])
 app.include_router(receipts.router, prefix="/api/v1/receipts", tags=["receipts"])
+app.include_router(admin.router, prefix="/api/v1/admin", tags=["admin"])
 
 @app.get("/")
 async def root():

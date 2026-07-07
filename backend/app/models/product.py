@@ -1,12 +1,15 @@
 import uuid
 from datetime import datetime
 from decimal import Decimal
-from sqlalchemy import Column, String, DateTime, Numeric
+from sqlalchemy import Column, String, DateTime, Numeric, UniqueConstraint
 from app.core.database import Base, GUID
 
 
 class Product(Base):
     __tablename__ = "products"
+    __table_args__ = (
+        UniqueConstraint("normalized_name", "brand", "unit", "quantity", name="uq_product_normalized"),
+    )
 
     id = Column(GUID, primary_key=True, default=uuid.uuid4)
     name = Column(String(255), nullable=False, index=True)

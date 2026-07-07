@@ -294,7 +294,75 @@
 
 ---
 
-## Resumo de Fases
+## Phase 11: Auth + Admin (Jornal de Ofertas) + Core Fixes
+
+### [T036] Auth Foundation (Backend)
+- Criar `app/api/deps.py` com `oauth2_scheme`, `get_current_user`, `get_current_admin`
+- Wire `decode_access_token` (era código morto)
+- `POST /auth/register` retorna Token+user (201, conforme contrato)
+- `POST /auth/login` atualiza `User.last_login`
+- `POST /receipts/` usa `Depends(get_current_user)` (remove `TEST_USER_EMAIL` hardcoded)
+- CORS com origins explícitos (não mais `allow_origins=["*"]`)
+- **Output**: Rotas protegidas + admin guard funcionando
+
+### [T037] Core Bugs: Custo-Benefício + Staleness + Seed
+- Corrigir baseline do cost_benefit: `savings = most_expensive - price` (era invertido)
+- Alinhar shape ao contrato v1.2 (`savings_vs_most_expensive`, `most_expensive_price`, `most_expensive_market`)
+- Preços >30 dias: marcar como `is_stale=True` e ordenar fresh-first (não mais hard-filter)
+- `MarketPrice` schema ganha `is_stale: bool`
+- `/products/search` retorna envelope `{products, total}`
+- Seed: usar `normalize_product()` para `normalized_name` (não mais strip manual)
+- Seed: `source="manual"` (era "seed")
+- Geocoding Redis: usar `settings.REDIS_URL` (não mais `localhost` hardcoded)
+- **Output**: Comparação de preços correta + preços desatualizados sinalizados
+
+### [T038] Cadastro de Mercado (Admin)
+- `POST /api/v1/markets` com `Depends(get_current_admin)` + geocoding automático
+- `MarketCreate` schema com lat/lng opcionais
+- Remover Haversine duplicado (reusar `calculate_distance`)
+- **Output**: Admin pode cadastrar mercados via API
+
+### [T039] Modelos OfferFlyer + OfferFlyerItem
+- `models/offer_flyer.py`, `models/offer_flyer_item.py` conforme data-model
+- FKs adicionadas em `Price.product_id/market_id/created_by`, `Market.created_by`
+- UNIQUE constraints em `Product` e `Price`
+- `models/__init__.py` re-exporta todos os modelos
+- **Output**: Tabelas criadas no schema
+
+### [T040] OCR Server-Side + Parser de Jornal (pytesseract)
+- `services/ocr.py`: `extract_text_from_image()` (pytesseract, lang='por') + `parse_offer_flyer()` (regex para R$ X,XX + texto próximo + confidence)
+- `requirements.txt`: pytesseract, Pillow, asyncpg, bcrypt, pytest, httpx, pytest-asyncio
+- **Output**: OCR de jornais funcionando, retorna itens com confidence score
+- **Risco**: Requer Tesseract-OCR binário no sistema (Windows: instalador UB-Mannheim)
+
+### [T041] Rotas Admin (Offer Flyers)
+- `POST /admin/offer-flyers` (upload + OCR síncrono via threadpool + fuzzy match + criação de items)
+- `GET /admin/offer-flyers/{id}` (detail + items)
+- `PATCH /admin/offer-flyers/{id}/items` (confirmar itens → criar Prices com source="oferta_flyer", promotion_ends_at=valid_until)
+- **Output**: Fluxo completo de upload → revisão → confirmação de jornais de ofertas
+
+### [T042] Frontend Auth
+- `contexts/AuthContext.tsx` com user/token/login/register/logout
+- `pages/Login.tsx`, `pages/Register.tsx`
+- `api.ts`: interceptors de token (request) e 401 (response → redirect login)
+- `App.tsx`: ProtectedRoute (scan, profile), AdminRoute (admin), bottom nav
+- **Output**: Login/cadastro funcionando, rotas protegidas
+
+### [T043] Frontend Admin Panel
+- `pages/Admin.tsx` rewrite: abas "Jornal de Ofertas" (upload + review de items + confirm) + "Novo Mercado" (form com campos)
+- API client: `createMarket`, `uploadOfferFlyer`, `getOfferFlyer`, `confirmOfferFlyerItems`, `listMarkets`
+- **Output**: Admin consegue uploadar jornal, revisar itens, confirmar, e cadastrar mercados
+
+### [T044] Frontend Core Fixes
+- `PriceList.tsx`: usar `savings_vs_most_expensive` do cost_benefit, mostrar transport_cost/worth_it por modo, badge de stale
+- `PriceMap.tsx`: fix do ícone do marcador react-leaflet (import de PNGs + L.icon), popup com cost_benefit completo
+- `types/index.ts`: `is_stale` adicionado a `MarketPrice`, novos tipos `AuthResponse`, `OfferFlyerItem`, `OfferFlyerUploadResponse`
+- `ProductSearch.tsx`/api.ts ajustado ao envelope `{products, total}`
+- **Output**: Interface reflete dados corretos de custo-benefício e staleness
+
+---
+
+## Resumo de Fases (atualizado)
 
 | Fase | Descrição | Tarefas | Prioridade |
 |------|-----------|---------|------------|
@@ -308,9 +376,10 @@
 | 8 | PWA | T028-T030 | 🟡 Alta |
 | 9 | Deploy | T031-T033 | 🔴 Crítica |
 | 10 | Documentation | T034-T035 | 🟢 Média |
+| 11 | Auth + Admin + Core Fixes | T036-T044 | 🔴 Crítica |
 
-**Total**: 35 tarefas  
-**Estimativa**: 3-4 dias de trabalho (com subagentes paralelos)
+**Total**: 44 tarefas  
+**Estimativa**: 5-6 dias de trabalho (com subagentes paralelos)
 
 ---
 

@@ -1,27 +1,22 @@
 
 import re
-from fastapi import APIRouter, Depends, HTTPException, Query
+import uuid
+from datetime import datetime
+from typing import List, Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, text
+
+from app.api.deps import get_current_admin
 from app.core.database import get_db
 from app.models.market import Market
-from app.schemas.market import MarketResponse
-from typing import List
-import math
+from app.models.user import User
+from app.schemas.market import MarketCreate, MarketResponse
+from app.services.geocoding import geocode_address
+from app.services.utils.distance import calculate_distance
 
 router = APIRouter()
-
-def haversine_distance(lat1, lon1, lat2, lon2):
-    """Calculate distance between two points in km"""
-    R = 6371  # Earth radius in km
-    lat1_rad = math.radians(lat1)
-    lat2_rad = math.radians(lat2)
-    delta_lat = math.radians(lat2 - lat1)
-    delta_lon = math.radians(lon2 - lon1)
-    
-    a = math.sin(delta_lat/2)**2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(delta_lon/2)**2
-    c = 2 * math.asin(math.sqrt(a))
-    return R * c
 
 @router.get("/nearby", response_model=List[MarketResponse])
 async def get_nearby_markets(
@@ -33,11 +28,10 @@ async def get_nearby_markets(
     """Listar mercados próximos"""
     result = await db.execute(select(Market))
     markets = result.scalars().all()
-    
-    # Filter by distance and sort
+
     markets_with_distance = []
     for market in markets:
-        distance = haversine_distance(lat, lng, market.latitude, market.longitude)
+        distance = calculate_distance(lat, lng, market.latitude, market.longitude)
         if distance <= radius:
             market_dict = {
                 "id": str(market.id),
@@ -55,6 +49,54 @@ async def get_nearby_markets(
     # Sort by distance
     markets_with_distance.sort(key=lambda x: x["distance_km"])
     return markets_with_distance
+
+
+@router.post("", response_model=MarketResponse, status_code=status.HTTP_201_CREATED)
+async def create_market(
+    market_data: MarketCreate,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(get_current_admin),
+):
+    """Cadastrar novo mercado (admin only). Faz geocoding automático se lat/lng não fornecidos."""
+    lat = market_data.latitude
+    lng = market_data.longitude
+
+    if lat is None or lng is None:
+        full_address = f"{market_data.address}, {market_data.neighborhood}, {market_data.city}, {market_data.state}"
+        geo_result = geocode_address(full_address)
+        if geo_result:
+            lat = geo_result["lat"]
+            lng = geo_result["lng"]
+        else:
+            raise HTTPException(
+                status_code=400,
+                detail="Não foi possível determinar coordenadas do endereço. Forneça latitude/longitude manualmente.",
+            )
+
+    now = datetime.utcnow()
+    market = Market(
+        id=uuid.uuid4(),
+        name=market_data.name,
+        cnpj=market_data.cnpj,
+        address=market_data.address,
+        neighborhood=market_data.neighborhood,
+        city=market_data.city,
+        state=market_data.state,
+        zipcode=market_data.zipcode,
+        latitude=lat,
+        longitude=lng,
+        opening_hours=market_data.opening_hours,
+        categories=market_data.categories,
+        phone=market_data.phone,
+        created_by=admin.id,
+        created_at=now,
+        updated_at=now,
+    )
+    db.add(market)
+    await db.commit()
+    await db.refresh(market)
+    return market
+
 
 @router.get("/by-cnpj", response_model=MarketResponse)
 async def get_market_by_cnpj(cnpj: str = Query(...), db: AsyncSession = Depends(get_db)):

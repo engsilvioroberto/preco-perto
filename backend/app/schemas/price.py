@@ -47,6 +47,7 @@ class MarketPrice(BaseModel):
     distance_km: float
     captured_at: str
     source: str
+    is_stale: bool = False
     cost_benefit: Optional[Dict[str, Any]] = None
 
 

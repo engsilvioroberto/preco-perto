@@ -1,6 +1,6 @@
 # API Contracts — PreçoPerto MVP
 
-**Versão**: 1.1  
+**Versão**: 1.2  
 **Data**: 2026-07-06  
 **Base URL**: `https://api.precoperto.app` (produção) ou `http://localhost:8000` (local)
 
@@ -227,6 +227,66 @@ GET /api/v1/markets/{market_id}
 
 ---
 
+### Cadastrar Mercado (Admin)
+
+```http
+POST /api/v1/markets
+Authorization: Bearer <admin_token>
+Content-Type: application/json
+
+{
+  "name": "Mercado Exemplo",
+  "cnpj": "12.345.678/0001-90",
+  "address": "Av. Exemplo, 100",
+  "neighborhood": "Centro",
+  "city": "Ribeirão Preto",
+  "state": "SP",
+  "zipcode": "14000-000",
+  "latitude": null,
+  "longitude": null,
+  "phone": "(16) 3333-4444",
+  "categories": ["supermercado"],
+  "opening_hours": {
+    "monday": {"open": "08:00", "close": "22:00"}
+  }
+}
+```
+
+**Notas**:
+- `latitude` e `longitude` são opcionais; se não fornecidos, o sistema tenta geocoding automático via endereço.
+- `categories` é opcional (array de strings).
+
+**Response 201**:
+```json
+{
+  "id": "uuid",
+  "name": "Mercado Exemplo",
+  "cnpj": "12.345.678/0001-90",
+  "address": "Av. Exemplo, 100",
+  "neighborhood": "Centro",
+  "city": "Ribeirão Preto",
+  "state": "SP",
+  "zipcode": "14000-000",
+  "latitude": -21.1767,
+  "longitude": -47.8208,
+  "opening_hours": {
+    "monday": {"open": "08:00", "close": "22:00"}
+  },
+  "categories": ["supermercado"],
+  "phone": "(16) 3333-4444",
+  "created_at": "2026-07-04T10:00:00Z"
+}
+```
+
+**Response 403**:
+```json
+{
+  "detail": "Acesso negado. Requer privilégios de administrador."
+}
+```
+
+---
+
 ## Prices
 
 ### Buscar Preços de Produto (comparação)
@@ -265,6 +325,7 @@ GET /api/v1/prices/product/{product_id}?lat=-21.1767&lng=-47.8208&radius=10
       "distance_km": 0.5,
       "captured_at": "2026-07-03T15:30:00Z",
       "source": "oferta_flyer",
+      "is_stale": false,
       "cost_benefit": {
         "savings_vs_most_expensive": 1.50,
         "most_expensive_price": 6.49,
@@ -371,7 +432,11 @@ longitude: -47.8208
 
 ## Offer Flyers (Jornais de Ofertas) — Admin Only
 
-### Upload Jornal de Ofertas
+> **Nota de arquitetura:** OCR roda server-side (pytesseract, lang=por).  
+> O processamento é síncrono: o admin uploada a imagem, o sistema extrai itens e retorna
+> o resultado imediatamente para revisão. Não há polling de status.
+
+### Upload e Processamento do Jornal
 
 ```http
 POST /api/v1/admin/offer-flyers
@@ -390,12 +455,31 @@ valid_until: 2026-07-10
 - `valid_from` (required): Data de início da validade
 - `valid_until` (required): Data de fim da validade
 
+**Processamento síncrono**:
+1. Salva a imagem em `/uploads/offer-flyers/<uuid><ext>`
+2. Roda OCR (pytesseract) + parser de texto → extrai itens (description, price, confidence)
+3. Para cada item: faz fuzzy-match (`threshold ≥ 85`) com produtos existentes
+4. Cria registro `OfferFlyer` (status: `completed`) + `OfferFlyerItem` (is_confirmed: false)
+5. Retorna items para revisão do admin
+
 **Response 201**:
 ```json
 {
   "offer_flyer_id": "uuid",
-  "status": "processing",
-  "message": "Jornal de ofertas enviado para processamento."
+  "status": "completed",
+  "items": [
+    {
+      "id": "uuid",
+      "product_id": null,
+      "product_name": null,
+      "description": "Leite Integral Piracanjuba 1L",
+      "price": 4.99,
+      "original_price": 5.99,
+      "confidence": 85.0,
+      "is_confirmed": false
+    }
+  ],
+  "total_items": 50
 }
 ```
 
