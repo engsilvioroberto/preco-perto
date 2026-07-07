@@ -1,6 +1,7 @@
-
+from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from app.api.routes import auth, products, markets, prices, receipts
 
 app = FastAPI(
@@ -8,6 +9,10 @@ app = FastAPI(
     version="1.0.0",
     description="API para comparação de preços colaborativa"
 )
+
+UPLOAD_DIR = Path(__file__).resolve().parent.parent / "uploads"
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(UPLOAD_DIR)), name="uploads")
 
 # CORS
 app.add_middleware(

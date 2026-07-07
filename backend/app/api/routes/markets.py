@@ -1,4 +1,5 @@
 
+import re
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, text
@@ -54,6 +55,19 @@ async def get_nearby_markets(
     # Sort by distance
     markets_with_distance.sort(key=lambda x: x["distance_km"])
     return markets_with_distance
+
+@router.get("/by-cnpj", response_model=MarketResponse)
+async def get_market_by_cnpj(cnpj: str = Query(...), db: AsyncSession = Depends(get_db)):
+    """Buscar mercado pelo CNPJ extraído de uma nota fiscal escaneada"""
+    digits_only = re.sub(r'\D', '', cnpj)
+    result = await db.execute(select(Market))
+    markets = result.scalars().all()
+
+    for market in markets:
+        if market.cnpj and re.sub(r'\D', '', market.cnpj) == digits_only:
+            return market
+
+    raise HTTPException(status_code=404, detail="Mercado não encontrado para este CNPJ")
 
 @router.get("/{market_id}", response_model=MarketResponse)
 async def get_market(market_id: str, db: AsyncSession = Depends(get_db)):
