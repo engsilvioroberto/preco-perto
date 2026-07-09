@@ -1,67 +1,39 @@
-
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, text
-from app.core.database import get_db
-from app.models.market import Market
-from app.schemas.market import MarketResponse
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 from typing import List
-import math
+from app.core.database import get_db
+from app.models.market import Market as MarketModel
+from app.schemas.schemas import Market as MarketSchema
 
 router = APIRouter()
 
-def haversine_distance(lat1, lon1, lat2, lon2):
-    """Calculate distance between two points in km"""
-    R = 6371  # Earth radius in km
-    lat1_rad = math.radians(lat1)
-    lat2_rad = math.radians(lat2)
-    delta_lat = math.radians(lat2 - lat1)
-    delta_lon = math.radians(lon2 - lon1)
-    
-    a = math.sin(delta_lat/2)**2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(delta_lon/2)**2
-    c = 2 * math.asin(math.sqrt(a))
-    return R * c
-
-@router.get("/nearby", response_model=List[MarketResponse])
-async def get_nearby_markets(
-    lat: float = Query(...),
-    lng: float = Query(...),
-    radius: float = Query(10, ge=0.1, le=50),
-    db: AsyncSession = Depends(get_db)
+@router.get("/nearby", response_model=List[MarketSchema])
+def get_nearby_markets(
+    lat: float,
+    lng: float,
+    radius: float = 10.0,
+    db: Session = Depends(get_db)
 ):
-    """Listar mercados próximos"""
-    result = await db.execute(select(Market))
-    markets = result.scalars().all()
+    """Get markets near a location"""
+    from app.services.utils.distance import haversine_distance
     
-    # Filter by distance and sort
-    markets_with_distance = []
+    markets = db.query(MarketModel).all()
+    
+    # Filter by distance
+    nearby = []
     for market in markets:
+        if market.latitude is None or market.longitude is None:
+            continue
         distance = haversine_distance(lat, lng, market.latitude, market.longitude)
         if distance <= radius:
-            market_dict = {
-                "id": str(market.id),
-                "name": market.name,
-                "address": market.address,
-                "neighborhood": market.neighborhood,
-                "latitude": market.latitude,
-                "longitude": market.longitude,
-                "distance_km": round(distance, 2),
-                "opening_hours": market.opening_hours,
-                "categories": market.categories
-            }
-            markets_with_distance.append(market_dict)
+            nearby.append(market)
     
-    # Sort by distance
-    markets_with_distance.sort(key=lambda x: x["distance_km"])
-    return markets_with_distance
+    return nearby
 
-@router.get("/{market_id}", response_model=MarketResponse)
-async def get_market(market_id: str, db: AsyncSession = Depends(get_db)):
-    """Obter mercado por ID"""
-    result = await db.execute(select(Market).where(Market.id == market_id))
-    market = result.scalar_one_or_none()
-    
+@router.get("/{market_id}", response_model=MarketSchema)
+def get_market(market_id: int, db: Session = Depends(get_db)):
+    """Get market by ID"""
+    market = db.query(MarketModel).filter(MarketModel.id == market_id).first()
     if not market:
-        raise HTTPException(status_code=404, detail="Mercado não encontrado")
-    
+        raise HTTPException(status_code=404, detail="Market not found")
     return market

@@ -1,44 +1,23 @@
-
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, or_
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from typing import List
 from app.core.database import get_db
 from app.models.product import Product
-from app.schemas.product import ProductResponse
-from typing import List
+from app.schemas.schemas import Product
 
 router = APIRouter()
 
-@router.get("/search", response_model=List[ProductResponse])
-async def search_products(
-    q: str = Query(..., min_length=2),
-    limit: int = Query(10, ge=1, le=50),
-    db: AsyncSession = Depends(get_db)
-):
-    """Buscar produtos por nome (autocomplete)"""
-    search_term = f"%{q.lower()}%"
-    
-    result = await db.execute(
-        select(Product)
-        .where(
-            or_(
-                Product.name.ilike(search_term),
-                Product.normalized_name.ilike(search_term)
-            )
-        )
-        .limit(limit)
-    )
-    
-    products = result.scalars().all()
-    return products
+@router.get("/search", response_model=List[Product])
+def search_products(q: str, limit: int = 10, db: Session = Depends(get_db)):
+    """Search products by name (fuzzy match)"""
+    from app.services.search_service import search_products as fuzzy_search
+    results = fuzzy_search(db, q, limit=limit)
+    return [product for product, score in results]
 
-@router.get("/{product_id}", response_model=ProductResponse)
-async def get_product(product_id: str, db: AsyncSession = Depends(get_db)):
-    """Obter produto por ID"""
-    result = await db.execute(select(Product).where(Product.id == product_id))
-    product = result.scalar_one_or_none()
-    
+@router.get("/{product_id}", response_model=Product)
+def get_product(product_id: int, db: Session = Depends(get_db)):
+    """Get product by ID"""
+    product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
-        raise HTTPException(status_code=404, detail="Produto não encontrado")
-    
+        raise HTTPException(status_code=404, detail="Product not found")
     return product

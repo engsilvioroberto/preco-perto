@@ -1,152 +1,127 @@
-
-from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc, and_
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from typing import List
+from datetime import datetime, timedelta
 from app.core.database import get_db
 from app.models.price import Price
 from app.models.product import Product
 from app.models.market import Market
-from app.schemas.price import PriceComparisonResponse, MarketPrice
-from app.services.utils.distance import calculate_distance, calculate_cost_benefit
-from typing import List
-from datetime import datetime, timedelta
+from pydantic import BaseModel
+from typing import Optional, Any, Dict
+
+class MarketPriceItem(BaseModel):
+    market_id: int
+    market_name: str
+    market_address: Optional[str] = None
+    market_latitude: float
+    market_longitude: float
+    price: float
+    distance_km: float
+    timestamp: Optional[str] = None
+    
+    class Config:
+        from_attributes = True
+
+class PriceComparisonResponse(BaseModel):
+    product: Dict[str, Any]
+    prices: List[MarketPriceItem]
+    cheapest_price: float
+    most_expensive_price: float
+    average_price: float
+    total_markets: int
 
 router = APIRouter()
 
 @router.get("/product/{product_id}", response_model=PriceComparisonResponse)
-async def get_prices_by_product(
-    product_id: str,
-    lat: float = Query(...),
-    lng: float = Query(...),
-    radius: float = Query(10, ge=0.1, le=50),
-    db: AsyncSession = Depends(get_db)
+def get_prices_by_product(
+    product_id: int,
+    lat: float,
+    lng: float,
+    radius: float = 10.0,
+    db: Session = Depends(get_db)
 ):
-    """Buscar preços de um produto com comparação"""
+    """Get prices for a product with nearby markets"""
+    from app.services.utils.distance import haversine_distance
+    
     # Get product
-    result = await db.execute(select(Product).where(Product.id == product_id))
-    product = result.scalar_one_or_none()
+    product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
-        raise HTTPException(status_code=404, detail="Produto não encontrado")
+        raise HTTPException(status_code=404, detail="Product not found")
     
-    # Get recent prices (last 30 days)
-    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
-    result = await db.execute(
-        select(Price, Market)
-        .join(Market, Price.market_id == Market.id)
-        .where(
-            and_(
-                Price.product_id == product_id,
-                Price.captured_at >= thirty_days_ago
-            )
-        )
-        .order_by(desc(Price.captured_at))
-    )
+    # Get all prices for this product
+    prices = db.query(Price, Market).join(Market).filter(
+        Price.product_id == product_id
+    ).all()
     
-    prices_with_markets = result.all()
-    
-    # Filter by distance and calculate cost-benefit
+    # Calculate distances and filter by radius
     market_prices = []
-    for price, market in prices_with_markets:
-        distance = calculate_distance(lat, lng, market.latitude, market.longitude)
+    for price, market in prices:
+        distance = haversine_distance(lat, lng, market.latitude, market.longitude)
         if distance <= radius:
-            market_prices.append({
-                "market_id": str(market.id),
-                "market_name": market.name,
-                "market_address": market.address,
-                "market_neighborhood": market.neighborhood,
-                "market_latitude": market.latitude,
-                "market_longitude": market.longitude,
-                "price": float(price.price),
-                "original_price": float(price.original_price) if price.original_price else None,
-                "is_promotion": price.is_promotion,
-                "promotion_ends_at": price.promotion_ends_at.isoformat() if price.promotion_ends_at else None,
-                "distance_km": round(distance, 2),
-                "captured_at": price.captured_at.isoformat(),
-                "source": price.source
-            })
+            market_prices.append(MarketPriceItem(
+                market_id=market.id,
+                market_name=market.name,
+                market_address=market.address,
+                market_latitude=market.latitude,
+                market_longitude=market.longitude,
+                price=price.price,
+                distance_km=round(distance, 2),
+                timestamp=price.timestamp.isoformat() if price.timestamp else None
+            ))
     
-    # Sort by price (cheapest first)
-    market_prices.sort(key=lambda x: x["price"])
-    
-    # Calculate cost-benefit
-    if len(market_prices) >= 2:
-        cheapest = market_prices[0]["price"]
-        most_expensive = market_prices[-1]["price"]
-        price_diff = most_expensive - cheapest
-        
-        for mp in market_prices:
-            savings = mp["price"] - cheapest
-            cost_benefit = calculate_cost_benefit(mp["distance_km"], savings)
-            mp["cost_benefit"] = cost_benefit
+    # Sort by price
+    market_prices.sort(key=lambda x: x.price)
     
     # Calculate stats
-    prices_list = [mp["price"] for mp in market_prices]
-    avg_price = sum(prices_list) / len(prices_list) if prices_list else 0
+    prices_list = [mp.price for mp in market_prices]
+    cheapest = min(prices_list) if prices_list else 0
+    most_expensive = max(prices_list) if prices_list else 0
+    average = sum(prices_list) / len(prices_list) if prices_list else 0
     
-    return {
-        "product": {
-            "id": str(product.id),
+    return PriceComparisonResponse(
+        product={
+            "id": product.id,
             "name": product.name,
-            "category": product.category,
-            "unit": product.unit,
-            "quantity": float(product.quantity) if product.quantity else None
+            "brand": product.brand
         },
-        "prices": market_prices,
-        "cheapest_price": min(prices_list) if prices_list else 0,
-        "most_expensive_price": max(prices_list) if prices_list else 0,
-        "average_price": round(avg_price, 2),
-        "total_markets": len(market_prices)
-    }
+        prices=market_prices,
+        cheapest_price=cheapest,
+        most_expensive_price=most_expensive,
+        average_price=round(average, 2),
+        total_markets=len(market_prices)
+    )
 
 @router.get("/market/{market_id}")
-async def get_prices_by_market(
-    market_id: str,
-    limit: int = Query(50, ge=1, le=200),
-    db: AsyncSession = Depends(get_db)
+def get_prices_by_market(
+    market_id: int,
+    limit: int = 50,
+    db: Session = Depends(get_db)
 ):
-    """Buscar preços por mercado"""
-    # Get market
-    result = await db.execute(select(Market).where(Market.id == market_id))
-    market = result.scalar_one_or_none()
+    """Get all prices for a market"""
+    market = db.query(Market).filter(Market.id == market_id).first()
     if not market:
-        raise HTTPException(status_code=404, detail="Mercado não encontrado")
+        raise HTTPException(status_code=404, detail="Market not found")
     
-    # Get prices
-    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
-    result = await db.execute(
-        select(Price, Product)
-        .join(Product, Price.product_id == Product.id)
-        .where(
-            and_(
-                Price.market_id == market_id,
-                Price.captured_at >= thirty_days_ago
-            )
-        )
-        .order_by(desc(Price.captured_at))
-        .limit(limit)
-    )
+    prices = db.query(Price, Product).join(Product).filter(
+        Price.market_id == market_id
+    ).limit(limit).all()
     
-    prices_with_products = result.all()
-    
-    prices = []
-    for price, product in prices_with_products:
-        prices.append({
-            "product_id": str(product.id),
+    prices_list = []
+    for price, product in prices:
+        prices_list.append({
+            "product_id": product.id,
             "product_name": product.name,
-            "product_category": product.category,
-            "price": float(price.price),
-            "original_price": float(price.original_price) if price.original_price else None,
-            "is_promotion": price.is_promotion,
-            "captured_at": price.captured_at.isoformat(),
-            "source": price.source
+            "product_brand": product.brand,
+            "price": price.price,
+            "timestamp": price.timestamp.isoformat() if price.timestamp else None
         })
     
     return {
         "market": {
-            "id": str(market.id),
+            "id": market.id,
             "name": market.name,
             "address": market.address
         },
-        "prices": prices,
-        "total": len(prices)
+        "prices": prices_list,
+        "total": len(prices_list)
     }

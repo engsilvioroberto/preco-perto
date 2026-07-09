@@ -6,22 +6,29 @@ import { PriceList } from '../components/PriceList';
 import { useGeolocation } from '../hooks/useGeolocation';
 import type { PriceComparison } from '../types';
 
+// Default location: Belo Horizonte center (used when user denies geolocation)
+const DEFAULT_LOCATION = { lat: -19.928, lng: -43.939 };
+
 export const Search = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
-  const { latitude, longitude } = useGeolocation();
+  const geo = useGeolocation();
   const [comparison, setComparison] = useState<PriceComparison | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Use geolocation if available, otherwise fall back to default
+  const latitude = geo.latitude ?? DEFAULT_LOCATION.lat;
+  const longitude = geo.longitude ?? DEFAULT_LOCATION.lng;
+
   useEffect(() => {
-    if (productId && latitude && longitude) {
+    if (productId) {
       loadPrices();
     }
   }, [productId, latitude, longitude]);
 
   const loadPrices = async () => {
-    if (!productId || !latitude || !longitude) return;
+    if (!productId) return;
 
     setLoading(true);
     try {
@@ -43,8 +50,13 @@ export const Search = () => {
     return <div className="error-page">{error}</div>;
   }
 
-  if (!comparison) {
-    return <div className="empty-page">Nenhum dado encontrado</div>;
+  if (!comparison || comparison.total_markets === 0) {
+    return (
+      <div className="empty-page">
+        <p>Nenhum preço encontrado para este produto.</p>
+        <button onClick={() => navigate('/')} className="btn-back">← Voltar</button>
+      </div>
+    );
   }
 
   return (

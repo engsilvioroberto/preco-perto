@@ -6,21 +6,29 @@ import { PriceMap } from '../components/PriceMap';
 import { useGeolocation } from '../hooks/useGeolocation';
 import type { PriceComparison } from '../types';
 
+// Default location: Belo Horizonte center (used when user denies geolocation)
+const DEFAULT_LOCATION = { lat: -19.928, lng: -43.939 };
+
 export const Map = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
-  const { latitude, longitude } = useGeolocation();
+  const geo = useGeolocation();
   const [comparison, setComparison] = useState<PriceComparison | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Use geolocation if available, otherwise fall back to default
+  const latitude = geo.latitude ?? DEFAULT_LOCATION.lat;
+  const longitude = geo.longitude ?? DEFAULT_LOCATION.lng;
+  const geoError = geo.error;
+
   useEffect(() => {
-    if (productId && latitude && longitude) {
+    if (productId) {
       loadPrices();
     }
   }, [productId, latitude, longitude]);
 
   const loadPrices = async () => {
-    if (!productId || !latitude || !longitude) return;
+    if (!productId) return;
 
     setLoading(true);
     try {
@@ -33,12 +41,17 @@ export const Map = () => {
     }
   };
 
-  if (loading || !latitude || !longitude) {
+  if (loading) {
     return <div className="loading-page">Carregando mapa...</div>;
   }
 
-  if (!comparison) {
-    return <div className="empty-page">Nenhum dado encontrado</div>;
+  if (!comparison || comparison.total_markets === 0) {
+    return (
+      <div className="empty-page">
+        <p>Nenhum dado encontrado</p>
+        <button onClick={() => navigate('/')} className="btn-back">← Voltar</button>
+      </div>
+    );
   }
 
   return (
@@ -47,6 +60,12 @@ export const Map = () => {
         <button onClick={() => navigate(`/search/${productId}`)} className="btn-back">←</button>
         <h2>{comparison.product.name}</h2>
       </header>
+
+      {geoError && (
+        <div className="location-note">
+          📍 Mostrando preços para a região de Belo Horizonte (localização não obtida)
+        </div>
+      )}
 
       <PriceMap
         prices={comparison.prices}
