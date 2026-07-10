@@ -10,8 +10,6 @@ export const PriceList = ({ prices, onViewMap }: PriceListProps) => {
     return <div className="empty-state">Nenhum preço encontrado</div>;
   }
 
-  const cheapest = prices[0];
-
   return (
     <div className="price-list">
       <div className="price-list-header">

@@ -19,25 +19,14 @@ export const Search = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (productId && latitude && longitude) {
-      loadPrices();
-    }
-  }, [productId, latitude, longitude]);
-
-  const loadPrices = async () => {
     if (!productId || !latitude || !longitude) return;
 
     setLoading(true);
-    try {
-      const data = await getPriceComparison(productId, latitude, longitude, 10);
-      setComparison(data);
-    } catch (err) {
-      setError('Erro ao carregar preços');
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    getPriceComparison(productId, latitude, longitude, 10)
+      .then(setComparison)
+      .catch(err => { setError('Erro ao carregar preços'); console.error(err); })
+      .finally(() => setLoading(false));
+  }, [productId, latitude, longitude]);
 
   if (loading) {
     return <div className="loading-page">Carregando preços...</div>;

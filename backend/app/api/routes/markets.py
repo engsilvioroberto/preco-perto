@@ -18,7 +18,28 @@ from app.services.utils.distance import calculate_distance
 
 router = APIRouter()
 
-@router.get("/nearby", response_model=List[MarketResponse])
+@router.get("", response_model=List[MarketResponse])
+async def list_markets(db: AsyncSession = Depends(get_db)):
+    """Listar todos os mercados"""
+    result = await db.execute(select(Market).order_by(Market.name))
+    markets = result.scalars().all()
+    return [{
+        "id": str(m.id),
+        "name": m.name,
+        "address": m.address,
+        "neighborhood": m.neighborhood,
+        "latitude": m.latitude,
+        "longitude": m.longitude,
+        "city": m.city,
+        "state": m.state,
+        "zipcode": m.zipcode,
+        "opening_hours": m.opening_hours,
+        "categories": m.categories,
+        "phone": m.phone,
+    } for m in markets]
+
+
+@router.get("/nearby")
 async def get_nearby_markets(
     lat: float = Query(...),
     lng: float = Query(...),
@@ -48,7 +69,7 @@ async def get_nearby_markets(
     
     # Sort by distance
     markets_with_distance.sort(key=lambda x: x["distance_km"])
-    return markets_with_distance
+    return {"markets": markets_with_distance, "total": len(markets_with_distance)}
 
 
 @router.post("", response_model=MarketResponse, status_code=status.HTTP_201_CREATED)

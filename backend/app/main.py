@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.api.routes import auth, products, markets, prices, receipts, admin
+from app.core.rate_limit import RateLimiter
 
 app = FastAPI(
     title="PreçoPerto API",
@@ -27,6 +28,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.middleware("http")(RateLimiter())
 
 # Routes
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])

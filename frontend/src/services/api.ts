@@ -168,6 +168,11 @@ export const confirmOfferFlyerItems = async (
   return response.data;
 };
 
+export const listAllMarkets = async (): Promise<Market[]> => {
+  const response = await api.get(`/api/v1/markets`);
+  return response.data;
+};
+
 export const listMarkets = async (): Promise<Market[]> => {
   const response = await api.get(`/api/v1/markets/nearby?lat=-21.1767&lng=-47.8208&radius=200`);
   return response.data;

@@ -18,7 +18,7 @@ export const ReceiptScanner = ({ onCapture }: ReceiptScannerProps) => {
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
-    } catch (error) {
+    } catch {
       alert('Não foi possível acessar a câmera. Verifique as permissões.');
     }
   };

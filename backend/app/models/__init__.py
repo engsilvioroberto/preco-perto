@@ -5,6 +5,7 @@ from app.models.price import Price
 from app.models.receipt import Receipt
 from app.models.offer_flyer import OfferFlyer
 from app.models.offer_flyer_item import OfferFlyerItem
+from app.models.receipt_item import ReceiptItem
 
 __all__ = [
     "User",
@@ -14,4 +15,5 @@ __all__ = [
     "Receipt",
     "OfferFlyer",
     "OfferFlyerItem",
+    "ReceiptItem",
 ]

@@ -18,24 +18,14 @@ export const Map = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (productId && latitude && longitude) {
-      loadPrices();
-    }
-  }, [productId, latitude, longitude]);
-
-  const loadPrices = async () => {
     if (!productId || !latitude || !longitude) return;
 
     setLoading(true);
-    try {
-      const data = await getPriceComparison(productId, latitude, longitude, 10);
-      setComparison(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    getPriceComparison(productId, latitude, longitude, 10)
+      .then(setComparison)
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
+  }, [productId, latitude, longitude]);
 
   if (loading || !latitude || !longitude) {
     return <div className="loading-page">Carregando mapa...</div>;

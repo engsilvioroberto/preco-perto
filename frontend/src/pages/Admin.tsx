@@ -5,13 +5,10 @@ import type { Market, OfferFlyerItem } from '../types';
 export const Admin = () => {
   const [tab, setTab] = useState<'flyer' | 'market'>('flyer');
   const [markets, setMarkets] = useState<Market[]>([]);
-  const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     listMarkets()
       .then(setMarkets)
-      .catch(() => {})
-      .finally(() => setLoading(false));
+      .catch(() => {});
   }, []);
 
   return (
@@ -67,7 +64,7 @@ function OfferFlyerTab({ markets }: { markets: Market[] }) {
       });
       setFlyerId(result.offer_flyer_id);
       setItems(result.items || []);
-    } catch (err) {
+    } catch {
       alert('Erro ao enviar jornal');
     } finally {
       setUploading(false);
@@ -89,7 +86,7 @@ function OfferFlyerTab({ markets }: { markets: Market[] }) {
       setFlyerId(null);
       setItems([]);
       setFile(null);
-    } catch (err) {
+    } catch {
       alert('Erro ao confirmar itens');
     }
   };
@@ -174,7 +171,7 @@ function CreateMarketTab() {
       await createMarket({ name, cnpj: cnpj || undefined, address, neighborhood: neighborhood || undefined, city, state, zipcode: zipcode || undefined, phone: phone || undefined });
       alert('Mercado cadastrado com sucesso!');
       setName(''); setCnpj(''); setAddress(''); setNeighborhood(''); setZipcode(''); setPhone('');
-    } catch (err) {
+    } catch {
       alert('Erro ao cadastrar mercado');
     } finally {
       setSaving(false);
