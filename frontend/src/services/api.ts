@@ -54,12 +54,7 @@ export const getNearbyMarkets = async (
   const response = await api.get(`/api/v1/markets/nearby`, {
     params: { lat, lng, radius },
   });
-  return response.data;
-};
-
-export const getMarket = async (marketId: string): Promise<Market> => {
-  const response = await api.get(`/api/v1/markets/${marketId}`);
-  return response.data;
+  return response.data.markets;
 };
 
 export const createMarket = async (data: Record<string, any>): Promise<Market> => {
@@ -165,11 +160,6 @@ export const confirmOfferFlyerItems = async (
   items: { item_id: string; product_id: string; is_confirmed: boolean }[]
 ): Promise<any> => {
   const response = await api.patch(`/api/v1/admin/offer-flyers/${offerFlyerId}/items`, { items });
-  return response.data;
-};
-
-export const listAllMarkets = async (): Promise<Market[]> => {
-  const response = await api.get(`/api/v1/markets`);
   return response.data;
 };
 

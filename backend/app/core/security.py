@@ -19,11 +19,6 @@ def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
 
-def get_password_hash(password: str) -> str:
-    """Hash a password using bcrypt."""
-    return hash_password(password)
-
-
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     """Create a JWT access token."""
     to_encode = data.copy()

@@ -20,7 +20,7 @@ from app.models.receipt import Receipt
 from app.models.offer_flyer import OfferFlyer
 from app.models.offer_flyer_item import OfferFlyerItem
 from app.models.receipt_item import ReceiptItem
-from app.core.security import get_password_hash
+from app.core.security import hash_password
 from app.services.product_normalization import normalize_product
 
 async def seed_data():
@@ -41,7 +41,7 @@ async def seed_data():
                 id=uuid.uuid4(),
                 email="admin@precoperto.com",
                 name="Admin PreçoPerto",
-                password_hash=get_password_hash("admin123"),
+                password_hash=hash_password("admin123"),
                 is_admin=True,
                 created_at=datetime.utcnow(),
                 updated_at=datetime.utcnow()
@@ -50,7 +50,7 @@ async def seed_data():
                 id=uuid.uuid4(),
                 email="joao@gmail.com",
                 name="João Silva",
-                password_hash=get_password_hash("joao123"),
+                password_hash=hash_password("joao123"),
                 is_admin=False,
                 created_at=datetime.utcnow(),
                 updated_at=datetime.utcnow()

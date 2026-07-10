@@ -3,15 +3,11 @@ uvicorn[standard]
 sqlalchemy[asyncio]
 redis
 python-jose[cryptography]
-passlib[bcrypt]
 python-multipart
 pydantic
 pydantic-settings
-python-dotenv
-alembic
 email-validator
 aiosqlite
-asyncpg
 rapidfuzz
 requests
 pytesseract
