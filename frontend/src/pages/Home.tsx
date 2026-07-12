@@ -13,34 +13,49 @@ export const Home = () => {
 
   return (
     <div className="home-page">
-      <header className="home-header">
-        <h1>🛒 PreçoPerto</h1>
-        <p>Compare preços de mercados próximos</p>
-      </header>
-
-      {loading && <div className="loading">Obtendo localização...</div>}
-      
-      {error && (
-        <div className="error-message">
-          <p>⚠️ {error}</p>
-          <p>Ative a localização para ver preços perto de você</p>
+      {/* Hero */}
+      <div className="home-hero">
+        <div className="hero-badge">
+          <span className="dot"></span>
+          Economize nas compras
         </div>
-      )}
-
-      {latitude && longitude && (
-        <div className="location-info">
-          📍 Localização obtida
-        </div>
-      )}
-
-      <div className="search-section">
-        <h2>Buscar Produto</h2>
-        <ProductSearch onSelect={handleProductSelect} />
+        <h1>Preço certo,<br /><span>perto de você</span></h1>
+        <p>Compare preços em tempo real entre os mercados da sua região.</p>
       </div>
 
+      {/* Search — auto-busca enquanto digita */}
+      <div className="search-section">
+        <div className="search-wrapper">
+          <span className="search-icon">🔍</span>
+          <ProductSearch onSelect={handleProductSelect} />
+        </div>
+      </div>
+
+      {/* Status messages */}
+      <div>
+        {loading && <div className="loading">📍 Obtendo localização...</div>}
+        {error && (
+          <div className="error-message">
+            <p>⚠️ {error}</p>
+            <p>Usando localização aproximada (BH)</p>
+          </div>
+        )}
+        {latitude && longitude && !error && (
+          <div className="location-info">
+            📍 Localização obtida
+          </div>
+        )}
+      </div>
+
+      {/* Quick actions */}
       <div className="quick-actions">
         <button onClick={() => navigate('/scan')} className="action-btn">
-          📷 Escanear Nota Fiscal
+          <div className="action-icon">📷</div>
+          <div className="action-text">
+            Escanear Nota Fiscal
+            <p>Adicione produtos escaneando sua nota</p>
+          </div>
+          <div className="action-arrow">→</div>
         </button>
       </div>
     </div>

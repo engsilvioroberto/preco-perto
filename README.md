@@ -1,171 +1,122 @@
-# 🛒 PreçoPerto
+# PreçoPerto
 
-**Comparador de preços colaborativo via scanner de notas fiscais**
+[![Status: Em Desenvolvimento](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow)](https://github.com/engsilvioroberto/preco-perto)
+[![Metodologia: SDD](https://img.shields.io/badge/Metodologia-Spec--Driven%20Development-blue)](./docs/SPEC_DRIVEN_DEVELOPMENT.md)
+[![Python](https://img.shields.io/badge/Python-3.11+-green?logo=python)](https://www.python.org)
+[![React](https://img.shields.io/badge/React-18-blue?logo=react)](https://react.dev)
+[![License](https://img.shields.io/badge/License-Open%20Source-lightgrey)](./LICENSE)
 
-PWA que permite comparar preços de produtos do dia a dia em mercados próximos. Usuários escaneiam notas fiscais, o sistema extrai preços via OCR, e um mapa interativo mostra onde cada produto está mais barato — com cálculo de custo-benefício do deslocamento.
+> Comparador de preços colaborativo para Ribeirão Preto — porque o melhor preço é o preço que a gente descobre junto.
 
-## 🎯 Problema
+## 📖 Sobre
 
-João precisa fazer compras mas não sabe qual mercado é mais barato. O mercado a 2km pode ter preços melhores, ou talvez valha a pena ir ao da esquina mesmo sendo mais caro. O PreçoPerto resolve isso com dados colaborativos e visualização em mapa.
+**PreçoPerto** é um PWA onde usuários escaneiam notas fiscais e admins fazem upload de jornais de ofertas. O sistema extrai preços via OCR, geolocaliza mercados e mostra no mapa onde cada produto está mais barato perto de você, com cálculo de custo-benefício do deslocamento.
 
-## 🚀 MVP Funcionalidades
+**Princípios:**
+- 🆓 Gratuito sempre — nunca cobra do usuário final
+- 🔓 Dados abertos — todo preço escaneado é público
+- 🔒 Privacidade — localização por bairro, nunca endereço exato
+- 🏗️ Build in Public — todo desenvolvimento documentado
 
-- **Busca de produtos** com autocomplete
-- **Comparação de preços** entre mercados próximos
-- **Mapa interativo** com pins de preços
-- **Cálculo custo-benefício**: economia vs deslocamento
-- **Scanner de nota fiscal** via câmera (OCR)
-- **PWA** instalável no celular
-- **Geolocalização** automática
+## 📚 Documentação
 
-## 🏗️ Stack
+| Documento | Descrição |
+|-----------|-----------|
+| [📋 PROJECT.md](./docs/PROJECT.md) | Visão geral completa do projeto, stack, arquitetura, status |
+| [📜 CONSTITUTION.md](./docs/CONSTITUTION.md) | 9 artigos que definem os princípios não-negociáveis |
+| [📝 FUNCTIONAL_SPEC](./specs/001-price-comparison/spec.md) | Especificação funcional: user scenarios, FRs, edge cases |
+| [🗺️ PLAN.md](./specs/001-price-comparison/plan.md) | Arquitetura SQLite-first, stack, fases de implementação |
+| [✅ TASKS.md](./docs/TASKS.md) | Decomposição executável em 5 fases (~38 dias úteis) |
+| [🔧 SDD Guide](./docs/SPEC_DRIVEN_DEVELOPMENT.md) | Metodologia Spec-Driven Development |
+| [🗄️ Data Model](./specs/001-price-comparison/data-model.md) | Entidades e relacionamentos do banco de dados |
 
-| Camada | Tecnologia |
-|--------|------------|
-| Frontend | React + TypeScript + Vite (PWA) |
-| Backend | Python + FastAPI |
-| Banco | Supabase (PostgreSQL) |
-| Cache | Redis (Upstash) |
-| Mapa | Leaflet + OpenStreetMap |
-| OCR | Tesseract.js (client-side) |
-| Deploy | GitHub Pages (frontend) + Railway (backend) |
-
-## 📦 Estrutura do Projeto
-
-```
-preco-perto/
-├── backend/          # FastAPI + SQLAlchemy
-├── frontend/         # React + TypeScript + Vite
-├── scripts/          # Scripts de setup e seed
-├── specs/            # Artefatos SDD
-│   └── 001-price-comparison/
-│       ├── spec.md
-│       ├── plan.md
-│       ├── tasks.md
-│       ├── data-model.md
-│       ├── contracts/api.md
-│       └── quickstart.md
-└── .specify/
-    └── memory/
-        └── constitution.md
-```
-
-## 🔧 Setup Local
+## 🚀 Setup Rápido
 
 ### Pré-requisitos
-
 - Python 3.11+
-- Node.js 20+
-- Conta no Supabase (free tier)
-- Conta no Upstash Redis (free tier)
+- Node.js 18+
+- [uv](https://github.com/astral-sh/uv) (gerenciador Python)
 
-### Backend
+### Backend (FastAPI)
 
 ```bash
 cd backend
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate   # Windows
-
-pip install -r requirements.txt
-
-# Configurar variáveis de ambiente
-cp .env.example .env
-# Editar .env com suas credenciais do Supabase
-
-# Rodar setup do banco
-python ../scripts/setup_supabase.py
-
-# Iniciar servidor
-uvicorn app.main:app --reload --port 8000
+uv sync
+uv run uvicorn app.main:app --reload
 ```
 
-### Frontend
+A API estará disponível em `http://localhost:8000`
+
+### Frontend (React + Vite)
 
 ```bash
 cd frontend
 npm install
-
-# Configurar variáveis de ambiente
-echo "VITE_API_URL=http://localhost:8000" > .env
-
-# Rodar em desenvolvimento
 npm run dev
 ```
 
-### Acessar
+O app estará disponível em `http://localhost:5173`
 
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-- API Docs: http://localhost:8000/docs
+### Seed de Dados (opcional)
 
-## 🌐 Deploy
+```bash
+cd scripts
+python seed_db.py
+```
 
-### Frontend (GitHub Pages)
+Popula o banco com 100+ produtos e 5+ mercados de Ribeirão Preto.
 
-O deploy é automático via GitHub Actions ao fazer push na branch `main`.
+## 🏗️ Stack
 
-URL: https://engsilvioroberto.github.io/preco-perto/
+**Backend:**
+- Python 3.11+ · FastAPI · SQLAlchemy (async) · Pydantic v2 · SQLite (MVP)
 
-### Backend (Railway/Render)
+**Frontend:**
+- React 18 · TypeScript · Vite · Leaflet (mapas) · PWA
 
-1. Criar projeto no Railway ou Render
-2. Conectar ao repositório GitHub
-3. Configurar variáveis de ambiente:
-   - `SUPABASE_URL`
-   - `SUPABASE_KEY`
-   - `DATABASE_URL`
-   - `REDIS_URL`
-   - `JWT_SECRET`
+**Infraestrutura:**
+- Supabase (PostgreSQL + Auth) · Railway/Fly.io (deploy backend) · Vercel (deploy frontend)
 
-## 📱 Testar no Celular
+## 📊 Status Atual
 
-1. Acesse https://engsilvioroberto.github.io/preco-perto/ no celular
-2. Permitir acesso à localização
-3. Buscar um produto (ex: "leite")
-4. Ver comparação de preços e mapa
-5. Para instalar: "Adicionar à tela inicial"
+**Fase 1 — Fundação** ✅ (em andamento)
 
-## 📊 Metodologia
+Próximas fases:
+- Fase 2: Backend core (API, OCR, SQLite) — 8 dias
+- Fase 3: Frontend core (mapa, busca, scanner) — 9 dias
+- Fase 4: Integração (OCR real, geolocalização) — 9 dias
+- Fase 5: MVP Launch (deploy, usuários beta) — 8 dias
 
-Este projeto segue **Spec-Driven Development (SDD)**:
+**Estimativa total**: ~38 dias úteis (+20% buffer = ~46 dias)
 
-1. **Constitution** → Princípios imutáveis
-2. **Spec** → O QUE construir (user stories)
-3. **Plan** → COMO construir (tech stack)
-4. **Tasks** → Decomposição em tarefas
-5. **Implement** → Código com TDD
-6. **Converge** → Validação final
+Ver [TASKS.md](./docs/TASKS.md) para detalhes completos.
 
-Todos os artefatos estão em `specs/001-price-comparison/`.
+## 🤝 Como Contribuir
 
-## 🗺️ Roadmap
+1. Leia a [CONSTITUTION.md](./docs/CONSTITUTION.md) — entenda os princípios
+2. Leia a [spec](./specs/001-price-comparison/spec.md) — entenda o produto
+3. Veja as [TASKS.md](./docs/TASKS.md) — encontre algo para fazer
+4. Siga o SDD: spec → plan → implement → validate
 
-### MVP (Atual)
-- [x] Constitution e Spec
-- [x] Plan técnico
-- [x] Tasks e implementação
-- [x] Deploy GitHub Pages
-- [ ] Setup Supabase (aguardando credenciais)
-- [ ] Seed de dados com cupons fiscais reais
-- [ ] Testes no celular
+**Áreas que precisamos:**
+- 💻 Código (backend/frontend)
+- 📊 Conteúdo (dados de mercados, jornais de oferta)
+- 🎨 Design (UX mobile-first, acessibilidade)
+- ⚙️ Ops (CI/CD, deploy, monitoramento)
+- 📢 Divulgação (build in public, comunidade local)
 
-### V2 (Futuro)
-- [ ] App mobile nativo (Flutter)
-- [ ] Gamificação (ranking, badges)
-- [ ] Upload de jornais de ofertas (admin)
-- [ ] OCR server-side (mais preciso)
-- [ ] Lista de compras inteligente
+## 🔗 Links
 
-## 🤝 Contribuindo
-
-Este é um projeto open source. Contribuições são bem-vindas!
+- **Repositório**: https://github.com/engsilvioroberto/preco-perto
+- **Issues**: https://github.com/engsilvioroberto/preco-perto/issues
+- **Metodologia**: [Spec-Driven Development](./docs/SPEC_DRIVEN_DEVELOPMENT.md)
 
 ## 📄 Licença
 
-MIT
+Open Source — ver [LICENSE](./LICENSE)
 
 ---
 
-**Região inicial**: Ribeirão Preto - SP  
-**Time**: Hermione (agentes) + Silvio Roberto Filho (PO)
+*PreçoPerto — porque o melhor preço é o preço que a gente descobre junto.*
+
+*Ribeirão Preto, 2026.*

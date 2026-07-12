@@ -1,11 +1,10 @@
-from datetime import datetime
+from pydantic import BaseModel
 from typing import Optional
-from uuid import UUID
-from pydantic import BaseModel, EmailStr
+from datetime import datetime
 
 
 class UserBase(BaseModel):
-    email: EmailStr
+    email: str
     name: str
 
 
@@ -14,26 +13,14 @@ class UserCreate(UserBase):
 
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    email: str
     password: str
 
 
 class UserResponse(UserBase):
-    id: UUID
+    id: str
     is_admin: bool
     created_at: datetime
-    updated_at: Optional[datetime] = None
-    last_login: Optional[datetime] = None
-
+    
     class Config:
         from_attributes = True
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
-
-
-class TokenData(BaseModel):
-    user_id: Optional[UUID] = None
-    email: Optional[str] = None

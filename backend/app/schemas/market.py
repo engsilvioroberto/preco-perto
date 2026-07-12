@@ -1,8 +1,6 @@
-
-from datetime import datetime
-from typing import Optional, List, Dict, Any
-from uuid import UUID
 from pydantic import BaseModel
+from typing import Optional, List, Dict, Any
+from datetime import datetime
 
 
 class MarketBase(BaseModel):
@@ -13,25 +11,11 @@ class MarketBase(BaseModel):
     longitude: float
 
 
-class MarketCreate(MarketBase):
-    cnpj: Optional[str] = None
-    city: str = "Ribeirão Preto"
-    state: str = "SP"
-    zipcode: Optional[str] = None
-    opening_hours: Optional[Dict[str, Any]] = None
-    categories: Optional[List[str]] = None
-    phone: Optional[str] = None
-
-
 class MarketResponse(MarketBase):
     id: str
-    cnpj: Optional[str] = None
-    city: Optional[str] = None
-    state: Optional[str] = None
-    zipcode: Optional[str] = None
     opening_hours: Optional[Dict[str, Any]] = None
     categories: Optional[List[str]] = None
     distance_km: Optional[float] = None
-
+    
     class Config:
         from_attributes = True

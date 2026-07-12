@@ -1,35 +1,26 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
-from sqlalchemy.orm import DeclarativeBase
-from app.core.config import settings
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+from pathlib import Path
 
+# SQLite database path
+DB_PATH = Path(__file__).parent.parent / "precoperto.db"
+DATABASE_URL = f"sqlite:///{DB_PATH}"
 
-# Create async engine
-engine = create_async_engine(
-    settings.DATABASE_URL,
-    echo=settings.DEBUG,
-    future=True,
-    pool_pre_ping=True,
+# SQLite doesn't support async, so we use sync engine
+engine = create_engine(
+    DATABASE_URL,
+    connect_args={"check_same_thread": False},  # Needed for SQLite
+    echo=False
 )
 
-# Create async session factory
-AsyncSessionLocal = async_sessionmaker(
-    engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
-    autocommit=False,
-    autoflush=False,
-)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+Base = declarative_base()
 
-# Base class for models
-class Base(DeclarativeBase):
-    pass
-
-
-# Dependency to get database session
-async def get_db():
-    async with AsyncSessionLocal() as session:
-        try:
-            yield session
-        finally:
-            await session.close()
+def get_db():
+    """Dependency to get database session"""
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

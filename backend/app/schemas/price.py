@@ -1,36 +1,14 @@
-
-from datetime import datetime, date
-from typing import Optional, List, Dict, Any
-from uuid import UUID
-from decimal import Decimal
 from pydantic import BaseModel
+from typing import Optional, List, Dict, Any
+from datetime import datetime
 
 
-class PriceBase(BaseModel):
-    product_id: UUID
-    market_id: UUID
-    price: Decimal
-    original_price: Optional[Decimal] = None
-    is_promotion: bool = False
-    promotion_ends_at: Optional[date] = None
-    source: str
-    source_id: Optional[UUID] = None
-    captured_at: datetime
-    expires_at: Optional[datetime] = None
-
-
-class PriceCreate(PriceBase):
-    pass
-
-
-class PriceResponse(PriceBase):
-    id: UUID
-    created_by: Optional[UUID] = None
-    created_at: datetime
-    updated_at: Optional[datetime] = None
-
-    class Config:
-        from_attributes = True
+class ProductInfo(BaseModel):
+    id: str
+    name: str
+    category: Optional[str] = None
+    unit: Optional[str] = None
+    quantity: Optional[float] = None
 
 
 class MarketPrice(BaseModel):
@@ -48,14 +26,6 @@ class MarketPrice(BaseModel):
     captured_at: str
     source: str
     cost_benefit: Optional[Dict[str, Any]] = None
-
-
-class ProductInfo(BaseModel):
-    id: str
-    name: str
-    category: Optional[str] = None
-    unit: Optional[str] = None
-    quantity: Optional[float] = None
 
 
 class PriceComparisonResponse(BaseModel):

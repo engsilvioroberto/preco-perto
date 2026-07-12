@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PreçoPerto — Notion Design Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      /* Notion Warm Palette */
+      --bg: #ffffff;
+      --bg-warm: #f6f5f4;
+      --text: rgba(0,0,0,0.95);
+      --text-secondary: #615d59;
+      --text-muted: #a39e98;
+      --border: 1px solid rgba(0,0,0,0.1);
+      --shadow-card: rgba(0,0,0,0.04) 0px 4px 18px, rgba(0,0,0,0.027) 0px 2.025px 7.84688px, rgba(0,0,0,0.02) 0px 0.8px 2.925px, rgba(0,0,0,0.01) 0px 0.175px 1.04062px;
+      --blue: #0075de;
+      --blue-badge-bg: #f2f9ff;
+      --blue-badge-text: #097fe8;
+      --radius: 12px;
+      --radius-sm: 4px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-warm);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Layout cels */
+    .container {
+      max-width: 400px;
+      margin: 20px auto;
+      background: var(--bg);
+      border-radius: var(--radius);
+      border: var(--border);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+    }
+
+    .section-header {
+      padding: 16px 20px;
+      border-bottom: var(--border);
+    }
+
+    .section-header h2 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ===== HOME ===== */
+    .home-header {
+      text-align: center;
+      padding: 32px 20px 24px;
+    }
+
+    .home-header .logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      background: var(--bg-warm);
+      border-radius: 14px;
+      font-size: 24px;
+      margin-bottom: 12px;
+      border: var(--border);
+    }
+
+    .home-header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.25px;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .home-header p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    /* ===== SEARCH ===== */
+    .search-bar {
+      margin: 0 20px 16px;
+      position: relative;
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 10px 16px 10px 40px;
+      border: var(--border);
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      color: var(--text);
+      outline: none;
+      background: var(--bg-warm);
+      transition: all 0.2s;
+    }
+
+    .search-bar input:focus {
+      border-color: var(--blue);
+      background: var(--bg);
+      box-shadow: 0 0 0 3px rgba(0,117,222,0.1);
+    }
+
+    .search-bar input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-bar .icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    /* ===== PRODUCT LIST ===== */
+    .product-list {
+      padding: 0 20px 16px;
+    }
+
+    .product-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: var(--border);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .product-item:last-child {
+      border-bottom: none;
+    }
+
+    .product-item:hover {
+      padding-left: 8px;
+    }
+
+    .product-item .name {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .product-item .brand {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .product-item .price {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .badge-pill {
+      display: inline-block;
+      background: var(--blue-badge-bg);
+      color: var(--blue-badge-text);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      letter-spacing: 0.3px;
+    }
+
+    /* ===== PRICE COMPARISON ===== */
+    .price-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      padding: 16px 20px;
+      background: var(--bg-warm);
+      border-bottom: var(--border);
+    }
+
+    .summary-item {
+      text-align: center;
+      border-right: var(--border);
+      padding: 8px 0;
+    }
+
+    .summary-item:last-child { border-right: none; }
+
+    .summary-item .label {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .summary-item .value {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .summary-item .value.green { color: #1aae39; }
+    .summary-item .value.blue { color: var(--blue); }
+
+    /* ===== MARKET CARDS ===== */
+    .market-list {
+      padding: 8px 20px 20px;
+    }
+
+    .market-card {
+      padding: 16px;
+      border: var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 10px;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .market-card:hover {
+      background: var(--bg-warm);
+    }
+
+    .market-card .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .market-card .market-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .market-card .market-address {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .market-card .market-price {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+
+    .market-card .distance {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .market-card .distance .dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      display: inline-block;
+    }
+
+    .market-card .cheapest-tag {
+      font-size: 11px;
+      font-weight: 600;
+      color: #1aae39;
+      background: rgba(26,174,57,0.08);
+      padding: 2px 8px;
+      border-radius: 9999px;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      background: var(--blue);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-decoration: none;
+    }
+
+    .btn-primary:hover { background: #005bab; }
+    .btn-primary:active { transform: scale(0.97); }
+
+    .btn-ghost {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      background: transparent;
+      color: var(--text);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-ghost:hover { background: rgba(0,0,0,0.05); }
+    .btn-ghost:active { transform: scale(0.97); }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      padding: 0 20px 20px;
+    }
+
+    /* ===== NAV ===== */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-bottom: var(--border);
+    }
+
+    .nav-bar .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    .nav-bar .brand-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--bg-warm);
+      border-radius: 8px;
+      border: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .nav-bar .nav-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      font-size: 18px;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.15s;
+    }
+
+    .nav-btn:hover { background: var(--bg-warm); }
+
+    /* ===== MAP BAR ===== */
+    .map-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      border-top: var(--border);
+      background: var(--bg);
+    }
+
+    .map-bar .btn-map {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-warm);
+      border: var(--border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .map-bar .btn-map:hover { background: #e8e7e6; }
+
+    /* ===== SCAN BUTTON ===== */
+    .quick-actions {
+      padding: 0 20px 20px;
+    }
+
+    .scan-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border: var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--bg-warm), #f0efee);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .scan-card:hover { border-color: var(--blue); }
+
+    .scan-card .icon-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--blue-badge-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .scan-card .text h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .scan-card .text p {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* ===== SECTION TITLE ===== */
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      padding: 16px 20px 8px;
+    }
+
+    .divider {
+      border: none;
+      border-top: var(--border);
+      margin: 0;
+    }
+
+    /* Footer */
+    .footer-info {
+      padding: 12px 20px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      border-top: var(--border);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- NAV -->
+    <div class="nav-bar">
+      <div class="brand">
+        <div class="brand-icon">🛒</div>
+        PreçoPerto
+      </div>
+      <div class="nav-actions">
+        <button class="nav-btn">👤</button>
+        <button class="nav-btn">⚙️</button>
+      </div>
+    </div>
+
+    <!-- HOME HEADER -->
+    <div class="home-header">
+      <div class="logo">🛒</div>
+      <h1>PreçoPerto</h1>
+      <p>Compare preços de mercados próximos</p>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="search-bar">
+      <span class="icon">🔍</span>
+      <input type="text" placeholder="Buscar produto..." value="Arroz">
+    </div>
+
+    <!-- PRODUCT RESULTS -->
+    <div class="section-title">Produtos</div>
+    <div class="product-list">
+      <div class="product-item">
+        <div>
+          <div class="name">Arroz Tio João 5kg</div>
+          <div class="brand">Tio João</div>
+        </div>
+        <span class="badge-pill">3 preços</span>
+      </div>
+      <div class="product-item">
+        <div>
+          <div class="name">Arroz Prato Fino 5kg</div>
+          <div class="brand">Prato Fino</div>
+        </div>
+        <span class="badge-pill">2 preços</span>
+      </div>
+      <div class="product-item">
+        <div>
+          <div class="name">Arroz Camil 1kg</div>
+          <div class="brand">Camil</div>
+        </div>
+        <span class="badge-pill">4 preços</span>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- PRICE COMPARISON -->
+    <div class="section-title">Comparação de Preços</div>
+    <div class="price-summary">
+      <div class="summary-item">
+        <span class="label">Menor</span>
+        <span class="value green">R$ 26,50</span>
+      </div>
+      <div class="summary-item">
+        <span class="label">Média</span>
+        <span class="value">R$ 28,43</span>
+      </div>
+      <div class="summary-item">
+        <span class="label">Maior</span>
+        <span class="value blue">R$ 29,90</span>
+      </div>
+    </div>
+
+    <!-- MARKET CARDS -->
+    <div class="market-list">
+      <div class="market-card">
+        <div class="row">
+          <div>
+            <div class="market-name">Extra Hiper</div>
+            <div class="market-address">Av. Amazonas, 3500</div>
+          </div>
+          <div style="text-align:right">
+            <div class="market-price">R$ 26,50</div>
+            <span class="cheapest-tag">💰 Mais barato</span>
+          </div>
+        </div>
+        <div class="distance">📍 0,47 km <span class="dot"></span> 15 min</div>
+      </div>
+
+      <div class="market-card">
+        <div class="row">
+          <div>
+            <div class="market-name">Supermercado BH</div>
+            <div class="market-address">Rua XV de Novembro, 150</div>
+          </div>
+          <div style="text-align:right">
+            <div class="market-price">R$ 28,90</div>
+          </div>
+        </div>
+        <div class="distance">📍 0,0 km <span class="dot"></span> Ao lado</div>
+      </div>
+
+      <div class="market-card">
+        <div class="row">
+          <div>
+            <div class="market-name">Carrefour Bairro</div>
+            <div class="market-address">Rua da Bahia, 800</div>
+          </div>
+          <div style="text-align:right">
+            <div class="market-price">R$ 29,90</div>
+          </div>
+        </div>
+        <div class="distance">📍 0,54 km <span class="dot"></span> 8 min</div>
+      </div>
+    </div>
+
+    <!-- MAP BUTTON -->
+    <div class="actions">
+      <button class="btn-primary" style="flex:1">🗺️ Ver no Mapa</button>
+      <button class="btn-ghost">📊 Histórico</button>
+    </div>
+
+    <hr class="divider">
+
+    <!-- SCAN RECEIPT -->
+    <div class="section-title" style="padding-top:8px">Ações rápidas</div>
+    <div class="quick-actions">
+      <div class="scan-card">
+        <div class="icon-circle">📷</div>
+        <div class="text">
+          <h3>Escanear Nota Fiscal</h3>
+          <p>Adicione produtos escaneando sua nota</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAP BAR -->
+    <div class="map-bar">
+      <div style="flex:1; font-size:13px; color:var(--text-secondary)">
+        📍 Belo Horizonte — <strong style="color:var(--text)">4 mercados</strong> encontrados
+      </div>
+      <button class="btn-map">🗺️ Mapa</button>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer-info">
+      PreçoPerto • Dados de exemplo • Julho 2026
+    </div>
+
+  </div>
+</body>
+</html>
