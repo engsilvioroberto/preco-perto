@@ -1,12 +1,11 @@
 {
   "rewrites": [
-    { "source": "/preco-perto/assets/(.*)", "destination": "/assets/$1" },
-    { "source": "/preco-perto/(.*)", "destination": "/index.html" },
+    { "source": "/assets/(.*)", "destination": "/assets/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
-      "source": "/preco-perto/assets/(.*)",
+      "source": "/assets/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
