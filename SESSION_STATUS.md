@@ -30,22 +30,13 @@ Deploy do MVP com **Vercel (frontend) + Railway (backend) + Supabase (banco) + U
 | `AGENTS.md` atualizado | ✅ Seção de deploy adicionada |
 | `CLAUDE.md` atualizado | ✅ Seção de deploy atualizada |
 
-### 🔴 Bloqueado — Push para GitHub
+### ✅ Push para GitHub — Resolvido
 
-O push está falhando por **autenticação**:
-- A conta ativa no `gh` é `siilvera-tech01` (não tem acesso de escrita ao repo)
-- A conta `engsilvioroberto` foi deslogada e precisa re-fazer login
-- O workflow `.github/workflows/ci.yml` foi removido do commit pra evitar erro de scope
+- Conta `engsilvioroberto` logada com scope `workflow`
+- Push force concluído — 20 commits locais no remote
+- `.github/workflows/ci.yml` adicionado
 
-**Para resolver:**
-```bash
-gh auth login --hostname github.com --web
-```
-1. Abrir o URL fornecido
-2. Fazer login com a conta **engsilvioroberto**
-3. Depois: `git push --force-with-lease`
-
-### ⏳ Próximos passos (depois do push)
+### ⏳ Próximos passos
 
 1. **Railway**: Configurar service pra usar Dockerfile (não railpack):
    - Settings → Build → Builder: **Dockerfile**
@@ -60,9 +51,7 @@ gh auth login --hostname github.com --web
    - Env var: `VITE_API_URL` = URL do Railway backend
    - Framework preset: Vite
 
-3. **CI/CD**: Re-adicionar `.github/workflows/ci.yml` (foi removido do commit pra evitar erro de scope)
-
-4. **Teste end-to-end**: Testar no celular
+3. **Teste end-to-end**: Testar no celular
 
 ## Arquivos importantes
 
@@ -71,7 +60,7 @@ gh auth login --hostname github.com --web
 - `backend/Dockerfile` — build image Python 3.11
 - `railway.json` — config Railway (na raiz do repo)
 - `frontend/vercel.json` — SPA rewrites
-- `.github/workflows/ci.yml` — CI (precisa ser re-adicionado)
+- `.github/workflows/ci.yml` — CI ✅
 
 ## Credenciais (salvas em backend/.env.production)
 
