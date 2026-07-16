@@ -20,6 +20,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://precoperto.app",
+        "https://preco-perto-three.vercel.app",
         "http://localhost:5173",
         "http://localhost:3000",
     ],

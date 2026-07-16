@@ -30,6 +30,11 @@ Deploy do MVP com **Vercel (frontend) + Railway (backend) + Supabase (banco) + U
 | `AGENTS.md` atualizado | ✅ Seção de deploy adicionada |
 | `CLAUDE.md` atualizado | ✅ Seção de deploy atualizada |
 
+| Railway deploy | ✅ Backend rodando em `https://preco-perto-production.up.railway.app` |
+| Railway env vars | ✅ 6 vars (DATABASE_URL, SUPABASE_URL, SUPABASE_KEY, REDIS_URL, JWT_SECRET, DEBUG) |
+| Vercel deploy | ✅ Frontend rodando em `https://preco-perto-three.vercel.app` |
+| Vercel env vars | ✅ VITE_API_URL apontando pro Railway |
+
 ### ✅ Push para GitHub — Resolvido
 
 - Conta `engsilvioroberto` logada com scope `workflow`
@@ -38,20 +43,8 @@ Deploy do MVP com **Vercel (frontend) + Railway (backend) + Supabase (banco) + U
 
 ### ⏳ Próximos passos
 
-1. **Railway**: Configurar service pra usar Dockerfile (não railpack):
-   - Settings → Build → Builder: **Dockerfile**
-   - Dockerfile Path: `backend/Dockerfile`
-   - Context: `backend`
-   - Adicionar env vars do `.env.production` no Railway dashboard
-
-2. **Vercel**: Criar projeto:
-   - Root dir: `frontend/`
-   - Build command: `npm run build`
-   - Output: `dist`
-   - Env var: `VITE_API_URL` = URL do Railway backend
-   - Framework preset: Vite
-
-3. **Teste end-to-end**: Testar no celular
+1. **Teste end-to-end**: Testar no celular
+2. **CORS**: Adicionar domínio do Vercel no backend (se necessário)
 
 ## Arquivos importantes
 
