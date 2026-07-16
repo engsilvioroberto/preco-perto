@@ -48,15 +48,22 @@ class GUID(TypeDecorator):
 
 # Create async engine
 connect_args = {}
-if settings.DATABASE_URL.startswith("sqlite"):
-    connect_args["check_same_thread"] = False
-
-engine = create_async_engine(
-    settings.DATABASE_URL,
+engine_kwargs = dict(
     echo=settings.DEBUG,
     future=True,
     pool_pre_ping=True,
+)
+
+if settings.DATABASE_URL.startswith("sqlite"):
+    connect_args["check_same_thread"] = False
+else:
+    # Supabase pgbouncer doesn't support prepared statements
+    connect_args["statement_cache_size"] = 0
+
+engine = create_async_engine(
+    settings.DATABASE_URL,
     connect_args=connect_args,
+    **engine_kwargs,
 )
 
 # Create async session factory

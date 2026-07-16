@@ -1,0 +1,883 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "ocr_receipt_flow",
+        "label": "OCR Receipt Full Pipeline",
+        "nodes": [
+          "ocr_pipeline",
+          "heuristic_parser",
+          "fuzzy_product_matching",
+          "specs_001_price_comparison_contracts_api_markets_by_cnpj",
+          "specs_001_price_comparison_contracts_api_receipts_upload",
+          "frontend_app",
+          "backend_app"
+        ],
+        "relation": "implement",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "docs/superpowers/specs/2026-07-05-receipt-ocr-design.md"
+      },
+      {
+        "id": "constitutional_principles_set",
+        "label": "Constitutional Principles for Pre\u00e7oPerto",
+        "nodes": [
+          "mobile_first_pwa_first",
+          "radical_simplicity",
+          "trusted_data",
+          "geolocation_core",
+          "transparent_cost_benefit",
+          "privacy_lgpd",
+          "initial_population_flyers"
+        ],
+        "relation": "participate_in",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": ".specify/memory/constitution.md"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "usePrices",
+      "file_type": "code",
+      "source_file": "frontend/src/hooks/usePrices.ts",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "frontend_src_hooks_useprices_useprices",
+      "community": 5,
+      "norm_label": "useprices"
+    },
+    {
+      "label": "useProducts",
+      "file_type": "code",
+      "source_file": "frontend/src/hooks/useProducts.ts",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "frontend_src_hooks_useproducts_useproducts",
+      "community": 6,
+      "norm_label": "useproducts"
+    },
+    {
+      "label": "extractText",
+      "file_type": "code",
+      "source_file": "frontend/src/services/ocr.ts",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "frontend_src_services_ocr_extracttext",
+      "community": 7,
+      "norm_label": "extracttext"
+    },
+    {
+      "label": "parseReceiptText",
+      "file_type": "code",
+      "source_file": "frontend/src/services/ocr.ts",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "frontend_src_services_ocr_parsereceipttext",
+      "community": 8,
+      "norm_label": "parsereceipttext"
+    },
+    {
+      "label": "Product",
+      "file_type": "code",
+      "source_file": "frontend/src/types/index.ts",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "frontend_src_types_index_product",
+      "community": 18,
+      "norm_label": "product"
+    },
+    {
+      "label": "Market",
+      "file_type": "code",
+      "source_file": "frontend/src/types/index.ts",
+      "source_location": "L13",
+      "_origin": "ast",
+      "id": "frontend_src_types_index_market",
+      "community": 10,
+      "norm_label": "market"
+    },
+    {
+      "label": "Price",
+      "file_type": "code",
+      "source_file": "frontend/src/types/index.ts",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "frontend_src_types_index_price",
+      "community": 16,
+      "norm_label": "price"
+    },
+    {
+      "label": "MarketPrice",
+      "file_type": "code",
+      "source_file": "frontend/src/types/index.ts",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "frontend_src_types_index_marketprice",
+      "community": 11,
+      "norm_label": "marketprice"
+    },
+    {
+      "label": "PriceComparison",
+      "file_type": "code",
+      "source_file": "frontend/src/types/index.ts",
+      "source_location": "L65",
+      "_origin": "ast",
+      "id": "frontend_src_types_index_pricecomparison",
+      "community": 17,
+      "norm_label": "pricecomparison"
+    },
+    {
+      "label": "User",
+      "file_type": "code",
+      "source_file": "frontend/src/types/index.ts",
+      "source_location": "L74",
+      "_origin": "ast",
+      "id": "frontend_src_types_index_user",
+      "community": 20,
+      "norm_label": "user"
+    },
+    {
+      "label": "ParsedReceiptItem",
+      "file_type": "code",
+      "source_file": "frontend/src/types/index.ts",
+      "source_location": "L81",
+      "_origin": "ast",
+      "id": "frontend_src_types_index_parsedreceiptitem",
+      "community": 15,
+      "norm_label": "parsedreceiptitem"
+    },
+    {
+      "label": "ParsedReceipt",
+      "file_type": "code",
+      "source_file": "frontend/src/types/index.ts",
+      "source_location": "L87",
+      "_origin": "ast",
+      "id": "frontend_src_types_index_parsedreceipt",
+      "community": 14,
+      "norm_label": "parsedreceipt"
+    },
+    {
+      "label": "AuthResponse",
+      "file_type": "code",
+      "source_file": "frontend/src/types/index.ts",
+      "source_location": "L94",
+      "_origin": "ast",
+      "id": "frontend_src_types_index_authresponse",
+      "community": 9,
+      "norm_label": "authresponse"
+    },
+    {
+      "label": "ReceiptUploadResponse",
+      "file_type": "code",
+      "source_file": "frontend/src/types/index.ts",
+      "source_location": "L100",
+      "_origin": "ast",
+      "id": "frontend_src_types_index_receiptuploadresponse",
+      "community": 19,
+      "norm_label": "receiptuploadresponse"
+    },
+    {
+      "label": "OfferFlyerItem",
+      "file_type": "code",
+      "source_file": "frontend/src/types/index.ts",
+      "source_location": "L106",
+      "_origin": "ast",
+      "id": "frontend_src_types_index_offerflyeritem",
+      "community": 12,
+      "norm_label": "offerflyeritem"
+    },
+    {
+      "label": "OfferFlyerUploadResponse",
+      "file_type": "code",
+      "source_file": "frontend/src/types/index.ts",
+      "source_location": "L117",
+      "_origin": "ast",
+      "id": "frontend_src_types_index_offerflyeruploadresponse",
+      "community": 13,
+      "norm_label": "offerflyeruploadresponse"
+    },
+    {
+      "label": "Pre\u00e7oPerto",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "precoperto_project",
+      "community": 0,
+      "norm_label": "precoperto"
+    },
+    {
+      "label": "Spec-Driven Development",
+      "file_type": "rationale",
+      "source_file": "docs/SPEC_DRIVEN_DEVELOPMENT.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_spec_driven_development",
+      "community": 4,
+      "norm_label": "spec-driven development"
+    },
+    {
+      "label": "Backend (FastAPI + SQLAlchemy)",
+      "file_type": "code",
+      "source_file": "AGENTS.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "backend_app",
+      "community": 1,
+      "norm_label": "backend (fastapi + sqlalchemy)"
+    },
+    {
+      "label": "Frontend (React 19 + Vite 8 + TS 6)",
+      "file_type": "code",
+      "source_file": "AGENTS.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "frontend_app",
+      "community": 0,
+      "norm_label": "frontend (react 19 + vite 8 + ts 6)"
+    },
+    {
+      "label": "OCR Receipt Pipeline",
+      "file_type": "concept",
+      "source_file": "docs/superpowers/specs/2026-07-05-receipt-ocr-design.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "ocr_pipeline",
+      "community": 2,
+      "norm_label": "ocr receipt pipeline"
+    },
+    {
+      "label": "Mobile-First, PWA-First",
+      "file_type": "rationale",
+      "source_file": ".specify/memory/constitution.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "mobile_first_pwa_first",
+      "community": 4,
+      "norm_label": "mobile-first, pwa-first"
+    },
+    {
+      "label": "Radical Simplicity",
+      "file_type": "rationale",
+      "source_file": ".specify/memory/constitution.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "radical_simplicity",
+      "community": 4,
+      "norm_label": "radical simplicity"
+    },
+    {
+      "label": "Trusted Data (timestamp + origin)",
+      "file_type": "rationale",
+      "source_file": ".specify/memory/constitution.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "trusted_data",
+      "community": 0,
+      "norm_label": "trusted data (timestamp + origin)"
+    },
+    {
+      "label": "Geolocation as Core",
+      "file_type": "rationale",
+      "source_file": ".specify/memory/constitution.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "geolocation_core",
+      "community": 1,
+      "norm_label": "geolocation as core"
+    },
+    {
+      "label": "Transparent Cost-Benefit",
+      "file_type": "rationale",
+      "source_file": ".specify/memory/constitution.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "transparent_cost_benefit",
+      "community": 3,
+      "norm_label": "transparent cost-benefit"
+    },
+    {
+      "label": "Privacy and LGPD",
+      "file_type": "rationale",
+      "source_file": ".specify/memory/constitution.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "privacy_lgpd",
+      "community": 0,
+      "norm_label": "privacy and lgpd"
+    },
+    {
+      "label": "Dual-Dialect DB (SQLite/Supabase)",
+      "file_type": "concept",
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "dual_dialect_db",
+      "community": 1,
+      "norm_label": "dual-dialect db (sqlite/supabase)"
+    },
+    {
+      "label": "Cost-Benefit Calculation (Haversine + transport costs)",
+      "file_type": "concept",
+      "source_file": "specs/001-price-comparison/clarifications.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "cost_benefit_calculation",
+      "community": 3,
+      "norm_label": "cost-benefit calculation (haversine + transport costs)"
+    },
+    {
+      "label": "Fuzzy Product Matching (rapidfuzz, threshold 85)",
+      "file_type": "concept",
+      "source_file": "specs/001-price-comparison/clarifications.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "fuzzy_product_matching",
+      "community": 2,
+      "norm_label": "fuzzy product matching (rapidfuzz, threshold 85)"
+    },
+    {
+      "label": "Heuristic Receipt Parser (regex-based)",
+      "file_type": "concept",
+      "source_file": "docs/superpowers/specs/2026-07-05-receipt-ocr-design.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "heuristic_parser",
+      "community": 2,
+      "norm_label": "heuristic receipt parser (regex-based)"
+    },
+    {
+      "label": "CI Pipeline (GitHub Actions)",
+      "file_type": "code",
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_workflows_ci_pipeline",
+      "community": 0,
+      "norm_label": "ci pipeline (github actions)"
+    },
+    {
+      "label": "GitHub Pages Deploy Pipeline",
+      "file_type": "code",
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "github_workflows_deploy_pipeline",
+      "community": 0,
+      "norm_label": "github pages deploy pipeline"
+    },
+    {
+      "label": "Initial Population via Offer Flyers",
+      "file_type": "rationale",
+      "source_file": ".specify/memory/constitution.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "initial_population_flyers",
+      "community": 0,
+      "norm_label": "initial population via offer flyers"
+    },
+    {
+      "label": "Geocoding Service (Nominatim + Redis cache)",
+      "file_type": "code",
+      "source_file": "backend/SERVICES_SUMMARY.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "geocoding_service",
+      "community": 1,
+      "norm_label": "geocoding service (nominatim + redis cache)"
+    },
+    {
+      "label": "Distance Calculation Service (Haversine)",
+      "file_type": "code",
+      "source_file": "backend/SERVICES_SUMMARY.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "distance_service",
+      "community": 3,
+      "norm_label": "distance calculation service (haversine)"
+    },
+    {
+      "label": "Product Normalization Service (rapidfuzz)",
+      "file_type": "code",
+      "source_file": "backend/SERVICES_SUMMARY.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "product_normalization_service",
+      "community": 2,
+      "norm_label": "product normalization service (rapidfuzz)"
+    },
+    {
+      "label": "GET /api/v1/markets/by-cnpj",
+      "file_type": "code",
+      "source_file": "specs/001-price-comparison/contracts/api.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "specs_001_price_comparison_contracts_api_markets_by_cnpj",
+      "community": 1,
+      "norm_label": "get /api/v1/markets/by-cnpj"
+    },
+    {
+      "label": "POST /api/v1/receipts/",
+      "file_type": "code",
+      "source_file": "specs/001-price-comparison/contracts/api.md",
+      "source_location": null,
+      "source_url": null,
+      "contributor": null,
+      "id": "specs_001_price_comparison_contracts_api_receipts_upload",
+      "community": 2,
+      "norm_label": "post /api/v1/receipts/"
+    },
+    {
+      "label": "GET /api/v1/prices/product/{id}",
+      "file_type": "code",
+      "source_file": "specs/001-price-comparison/contracts/api.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "specs_001_price_comparison_contracts_api_prices_comparison",
+      "community": 3,
+      "norm_label": "get /api/v1/prices/product/{id}"
+    }
+  ],
+  "links": [
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "precoperto_project",
+      "target": "backend_app"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "precoperto_project",
+      "target": "cost_benefit_calculation"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "precoperto_project",
+      "target": "docs_spec_driven_development"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "precoperto_project",
+      "target": "frontend_app"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".specify/memory/constitution.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "precoperto_project",
+      "target": "geolocation_core"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "precoperto_project",
+      "target": "github_workflows_ci_pipeline"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "precoperto_project",
+      "target": "github_workflows_deploy_pipeline"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".specify/memory/constitution.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "precoperto_project",
+      "target": "initial_population_flyers"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".specify/memory/constitution.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "precoperto_project",
+      "target": "privacy_lgpd"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".specify/memory/constitution.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "precoperto_project",
+      "target": "transparent_cost_benefit"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".specify/memory/constitution.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "precoperto_project",
+      "target": "trusted_data"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/SPEC_DRIVEN_DEVELOPMENT.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docs_spec_driven_development",
+      "target": "mobile_first_pwa_first"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "docs/SPEC_DRIVEN_DEVELOPMENT.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "docs_spec_driven_development",
+      "target": "radical_simplicity"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/SERVICES_SUMMARY.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "backend_app",
+      "target": "distance_service"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "backend_app",
+      "target": "dual_dialect_db"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/SERVICES_SUMMARY.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "backend_app",
+      "target": "geocoding_service"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/SERVICES_SUMMARY.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "backend_app",
+      "target": "product_normalization_service"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_ci_pipeline",
+      "target": "backend_app"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "frontend_app",
+      "target": "ocr_pipeline"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/ci.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_ci_pipeline",
+      "target": "frontend_app"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".github/workflows/deploy.yml",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "github_workflows_deploy_pipeline",
+      "target": "frontend_app"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-07-05-receipt-ocr-design.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "ocr_pipeline",
+      "target": "fuzzy_product_matching"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-07-05-receipt-ocr-design.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "ocr_pipeline",
+      "target": "heuristic_parser"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-07-05-receipt-ocr-design.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "ocr_pipeline",
+      "target": "specs_001_price_comparison_contracts_api_markets_by_cnpj"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-07-05-receipt-ocr-design.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "ocr_pipeline",
+      "target": "specs_001_price_comparison_contracts_api_receipts_upload"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": ".specify/memory/constitution.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "mobile_first_pwa_first",
+      "target": "radical_simplicity"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": ".specify/memory/constitution.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "geolocation_core",
+      "target": "geocoding_service"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "specs/001-price-comparison/clarifications.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "cost_benefit_calculation",
+      "target": "transparent_cost_benefit"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "backend/SERVICES_SUMMARY.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "distance_service",
+      "target": "cost_benefit_calculation"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "specs/001-price-comparison/contracts/api.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "specs_001_price_comparison_contracts_api_prices_comparison",
+      "target": "cost_benefit_calculation"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "specs/001-price-comparison/clarifications.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "fuzzy_product_matching",
+      "target": "product_normalization_service"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "specs/001-price-comparison/contracts/api.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "specs_001_price_comparison_contracts_api_markets_by_cnpj",
+      "target": "geocoding_service"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "CLAUDE.md",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "specs_001_price_comparison_contracts_api_prices_comparison",
+      "target": "distance_service"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "ocr_receipt_flow",
+      "label": "OCR Receipt Full Pipeline",
+      "nodes": [
+        "ocr_pipeline",
+        "heuristic_parser",
+        "fuzzy_product_matching",
+        "specs_001_price_comparison_contracts_api_markets_by_cnpj",
+        "specs_001_price_comparison_contracts_api_receipts_upload",
+        "frontend_app",
+        "backend_app"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/superpowers/specs/2026-07-05-receipt-ocr-design.md"
+    },
+    {
+      "id": "constitutional_principles_set",
+      "label": "Constitutional Principles for Pre\u00e7oPerto",
+      "nodes": [
+        "mobile_first_pwa_first",
+        "radical_simplicity",
+        "trusted_data",
+        "geolocation_core",
+        "transparent_cost_benefit",
+        "privacy_lgpd",
+        "initial_population_flyers"
+      ],
+      "relation": "participate_in",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": ".specify/memory/constitution.md"
+    }
+  ],
+  "built_at_commit": "98c3289909564775086f8d8644d5d55a6daeee09"
+}
