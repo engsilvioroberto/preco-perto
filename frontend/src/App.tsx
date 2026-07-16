@@ -92,7 +92,7 @@ function AppContent() {
 
 function App() {
   return (
-    <Router basename="/preco-perto">
+    <Router basename="/">
       <AuthProvider>
         <AppContent />
       </AuthProvider>
