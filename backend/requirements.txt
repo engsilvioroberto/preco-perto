@@ -12,4 +12,4 @@ pydantic-settings==2.6.1
 python-dotenv==1.0.1
 alembic==1.13.3
 email-validator==2.3.0
-python-dotenv==1.0.0
+rapidfuzz==3.9.7
