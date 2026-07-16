@@ -1,4 +1,4 @@
-const CACHE_NAME = 'precoperto-v1';
+const CACHE_NAME = 'precoperto-v2';
 const urlsToCache = [
   '/',
   '/index.html',
